@@ -37,7 +37,7 @@ export const Home: React.FC<HomeProps> = ({ username, userClass, setSidebarOpen,
       </motion.div>
       <div className="space-y-3 md:space-y-4">
         <h1 className="text-xl md:text-3xl lg:text-4xl font-black tracking-normal leading-relaxed">
-          Selamat Datang <br className="hidden md:block"/> di Modul Berkebun <br className="hidden md:block"/> SMPN 1 Bengkalis
+          Selamat Datang <br className="hidden md:block"/> di Aplikasi Tryout <br className="hidden md:block"/> Mapel IPA
         </h1>
         <div className="space-y-1.5">
           <p className="text-sm md:text-lg opacity-90 font-medium">
@@ -59,7 +59,7 @@ export const Home: React.FC<HomeProps> = ({ username, userClass, setSidebarOpen,
         
         <div className="max-w-xs md:max-w-md mt-2">
           <p className="text-sm md:text-lg italic opacity-80 font-semibold leading-relaxed px-4 text-white/90">
-            "Janganlah engkau mengucapkan perkataan yang engkau sendiri tidak suka mendengarnya ketika orang lain mengucapkannya kepadamu."
+            "Bersungguh sungguh adalah ciri ciri orang Sukses"
           </p>
         </div>
 

@@ -17,7 +17,7 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
   const classes = ['8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I'];
 
   return (
-    <div id="app-wrapper" className="w-full h-screen overflow-hidden relative leaf-pattern" style={{ background: '#410052', fontFamily: "'Nunito', sans-serif" }}>
+    <div id="app-wrapper" className="w-full h-screen overflow-hidden relative leaf-pattern" style={{ background: '#0a018e', fontFamily: "'Nunito', sans-serif" }}>
       <GardenDecorations />
       {/* Main content */}
       <main className="relative z-10 flex flex-col items-center justify-center h-full px-4 text-center">
@@ -37,7 +37,7 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
               />
             </motion.div>
             <h1 id="hero-title" className="text-xl md:text-3xl font-black leading-tight" style={{ fontFamily: "'Playfair Display', serif", color: '#f3e8ff' }}>
-              Selamat Datang <br/> di Modul Berkebun SMPN 1 Bengkalis
+              Selamat Datang <br/> di Aplikasi Tryout IPA
             </h1>
           </div>
 
@@ -51,7 +51,7 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
           {/* Subtitle */}
           <div className="fade-up-d2 space-y-1">
             <p id="hero-subtitle" className="text-sm md:text-base max-w-md leading-relaxed mx-auto" style={{ color: '#d8b4fe', opacity: 0.8 }}>
-              “Satu langkah kecil hari ini, Menyelamatkan hidup di masa depan”
+              "Banyak Latihan Banyak dapat Ilmu"
             </p>
           </div>
 
@@ -71,16 +71,16 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
                   }
                 }}
                 placeholder="MASUKKAN NAMA ANDA" 
-                className="w-full px-5 py-3.5 rounded-full text-center text-base md:text-lg font-bold border-2 transition-all outline-none" 
-                style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#d8b4fe', color: '#410052' }}
+                className="w-full px-5 py-3.5 rounded-md text-center text-base md:text-lg font-bold border-2 transition-all outline-none" 
+                style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#bfdbfe', color: '#0a018e' }}
                 required
               /> 
 
               <select
                 value={userClass}
                 onChange={(e) => setUserClass(e.target.value)}
-                className={`w-full px-6 py-4 rounded-full text-center text-lg font-semibold border-2 transition-all outline-none appearance-none cursor-pointer ${username.toLowerCase() === 'gurusmp' ? 'opacity-80' : ''}`}
-                style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#d8b4fe', color: '#410052' }}
+                className={`w-full px-6 py-4 rounded-md text-center text-lg font-semibold border-2 transition-all outline-none appearance-none cursor-pointer ${username.toLowerCase() === 'gurusmp' ? 'opacity-80' : ''}`}
+                style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#bfdbfe', color: '#0a018e' }}
                 required
                 disabled={username.toLowerCase() === 'gurusmp'}
               >
@@ -93,8 +93,8 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
 
               <button 
                 type="submit" 
-                className="btn-garden pulse-glow inline-flex items-center justify-center gap-3 px-10 py-5 rounded-full text-xl font-bold tracking-wide mt-2" 
-                style={{ background: 'linear-gradient(135deg, #a855f7, #7e22ce)', color: '#fff', border: 'none', cursor: 'pointer' }}
+                className="btn-garden pulse-glow inline-flex items-center justify-center gap-3 px-10 py-5 rounded-md text-xl font-bold tracking-wide mt-2" 
+                style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: '#fff', border: 'none', cursor: 'pointer' }}
               > 
                 <span>MASUK</span> 
               </button>
@@ -103,7 +103,7 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
 
           {/* Tagline */}
           <p id="tagline" className="fade-up-d3 mt-8 text-sm tracking-widest uppercase" style={{ color: '#d8b4fe', opacity: 0.6 }}>
-            🍇 Kembali ke Alam 🍇
+            🍇 RAJIN PANGKAL PANDAI 🍇
           </p>
           <p className="fade-up-d3 mt-2 text-[10px] font-bold tracking-wide" style={{ color: '#d8b4fe' }}>
             Copyright SMPN 1 BENGKALIS

@@ -2,10 +2,10 @@ import { Theme, Material } from './types';
 
 export const THEME_PRESETS: Theme[] = [
   {
-    name: 'Berkebun',
-    bgMain: '#008db0',
-    bgSidebar: '#00627d',
-    accent: '#cdf4ff',
+    name: 'Tryout IPA',
+    bgMain: '#0a018e',
+    bgSidebar: '#06015b',
+    accent: '#bfdbfe',
     textMain: '#ffffff',
     textSidebar: '#ffffff',
     isDark: true,

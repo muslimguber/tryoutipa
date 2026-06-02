@@ -124,7 +124,7 @@ const App = () => {
     if (savedTheme) {
       try {
         const parsed = JSON.parse(savedTheme);
-        if (parsed.name === 'Grape') {
+        if (parsed.name === 'Grape' || parsed.name === 'Berkebun') {
           setTheme(THEME_PRESETS[0]);
         } else {
           setTheme(parsed);
@@ -469,8 +469,8 @@ const App = () => {
               )}
             </motion.button>
             <div>
-              <h2 className="font-black text-[11px] tracking-tight leading-none uppercase">Yuk Berkebun</h2>
-              <p className="text-[8px] opacity-60 font-bold uppercase tracking-widest mt-0.5">Modul Digital</p>
+              <h2 className="font-black text-[11px] tracking-tight leading-none uppercase">TRYOUT IPA</h2>
+              <p className="text-[8px] opacity-60 font-bold uppercase tracking-widest mt-0.5">MODUL IPA DIGITAL</p>
             </div>
             <button 
               onClick={() => setSidebarOpen(false)}
@@ -580,36 +580,47 @@ const App = () => {
           {/* Main Menu */}
           <div className="space-y-0.5">
             <label className="px-3 text-[9px] font-black opacity-40 uppercase tracking-[0.2em] mb-1.5 block">Modul Belajar</label>
-            {[1, 2, 3, 4, 5, 6, 7, 8].map((num, idx) => (
+            {[1, 2, 3].map((num, idx) => {
+              let moduleTitle = `MODUL ${num}`;
+              let moduleSubtitle = "";
+              let ModuleIcon = Icons.BookOpen;
+
+              if (num === 1) {
+                moduleTitle = "TRYOUT BAB 4";
+                moduleSubtitle = "Getaran Gelombang Cahaya";
+                ModuleIcon = Icons.Sun;
+              } else if (num === 2) {
+                moduleTitle = "TRYOUT BAB 5";
+                moduleSubtitle = "Unsur, Senyawa, Campuran";
+                ModuleIcon = Icons.FlaskConical;
+              } else if (num === 3) {
+                moduleTitle = "TRYOUT BAB 6";
+                moduleSubtitle = "Struktur Bumi";
+                ModuleIcon = Icons.Globe;
+              }
+
+              return (
               <React.Fragment key={num}>
                 <button 
                   onClick={() => openModule(num)}
                   className={`w-full flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all ${currentView === 'modul' && activeModule === num ? 'bg-white/20 shadow-lg' : 'hover:bg-white/5 opacity-60 hover:opacity-100'}`}
                 >
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${currentView === 'modul' && activeModule === num ? 'bg-white text-indigo-600' : 'bg-white/10'}`}>
-                    {currentView === 'modul' && activeModule === num ? <Icons.BookOpen size={18} /> : (
-                      !isTeacher && !unlockedModules.has(num) && num !== 1 && num !== 2 && num !== 3 && num !== 4 ? <Icons.Lock size={14} className="opacity-40" /> : (
-                        !logoError ? (
-                          <img 
-                            src="https://i.ibb.co.com/kVLW5n61/logo-smpn-1-bengkalis-kecil-Copy.png" 
-                            alt="Logo SMP" 
-                            className="w-5 h-5 object-contain"
-                            referrerPolicy="no-referrer"
-                          />
-                        ) : (
-                          <Icons.School size={16} className="opacity-50" />
-                        )
+                    {currentView === 'modul' && activeModule === num ? <ModuleIcon size={18} /> : (
+                      !isTeacher && !unlockedModules.has(num) && num !== 1 && num !== 2 && num !== 3 ? <Icons.Lock size={14} className="opacity-40" /> : (
+                        <ModuleIcon size={16} className="opacity-80" />
                       )
                     )}
                   </div>
-                  <div className="flex flex-col items-start">
-                    <span className="font-bold text-sm">MODUL {num}</span>
-                    {isTeacher && num !== 1 && num !== 2 && num !== 3 && num !== 4 && (
-                      <span className="text-[10px] opacity-80 font-mono text-amber-400">pass : {modulePasswords[num]}</span>
+                  <div className="flex flex-col items-start leading-tight">
+                    <span className="font-bold text-sm">{moduleTitle}</span>
+                    <span className="text-[9px] opacity-70 mt-0.5 text-left">{moduleSubtitle}</span>
+                    {isTeacher && num !== 1 && num !== 2 && num !== 3 && (
+                      <span className="text-[10px] opacity-80 font-mono text-amber-400 py-0.5">pass : {modulePasswords[num]}</span>
                     )}
                   </div>
                 </button>
-                {idx < 7 && (
+                {idx < 2 && (
                   <div className="mx-6 my-0.5">
                     <div 
                       className="h-[2px] w-full bg-white/30" 
@@ -618,7 +629,7 @@ const App = () => {
                   </div>
                 )}
               </React.Fragment>
-            ))}
+            )})}
             <div className="mx-4 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent my-2" />
           </div>
 
