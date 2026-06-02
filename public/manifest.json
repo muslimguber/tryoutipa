@@ -1,11 +1,11 @@
 {
-  "name": "MODUL BERKEBUN SMPN 1 BENGKALIS",
-  "short_name": "Modul Berkebun",
-  "description": "Aplikasi pembelajaran mandiri proyek kebun lahan sempit SMPN 1 Bengkalis",
+  "name": "TRYOUT IPA",
+  "short_name": "Tryout IPA",
+  "description": "Aplikasi Tryout Mapel IPA",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#f8fafc",
-  "theme_color": "#008db0",
+  "background_color": "#0a018e",
+  "theme_color": "#0a018e",
   "orientation": "portrait",
   "icons": [
     {

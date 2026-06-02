@@ -33,21 +33,16 @@ import { Home } from './components/Home';
 import { Hasil } from './components/Hasil';
 import { homeService } from './services/home';
 import { GardenDecorations } from './components/GardenDecorations';
-import { Modul1 } from './components/Modul1';
-import { Modul2 } from './components/Modul2';
-import { Modul3 } from './components/Modul3';
-import { Modul4 } from './components/Modul4';
-import { Modul5 } from './components/Modul5';
-import { Modul6 } from './components/Modul6';
-import { Modul7 } from './components/Modul7';
-import { Modul8 } from './components/Modul8';
 import { VideoPlayer } from './components/VideoPlayer';
 import { googleFormService } from './services/googleFormService';
+
 import { Rekap } from './components/Rekap';
-import { Refleksi } from './components/Refleksi';
+
+import { Bab4Renderer } from './components/Bab4Renderer';
+import { Bab5Renderer } from './components/Bab5Renderer';
+import { Bab6Renderer } from './components/Bab6Renderer';
 
 const App = () => {
-  // --- State ---
   const [username, setUsername] = useState<string>('');
   const [userClass, setUserClass] = useState<string>('');
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -64,15 +59,6 @@ const App = () => {
   const [showAbout, setShowAbout] = useState<boolean>(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState<boolean>(false);
   const [logoError, setLogoError] = useState<boolean>(false);
-  const [showRefleksiModal, setShowRefleksiModal] = useState<boolean>(false);
-  const [shownRefleksiModules, setShownRefleksiModules] = useState<Set<number>>(() => {
-    try {
-      const saved = localStorage.getItem('ipa_shown_refleksi_modules');
-      return saved ? new Set(JSON.parse(saved)) : new Set<number>();
-    } catch {
-      return new Set<number>();
-    }
-  });
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
   
@@ -186,24 +172,6 @@ const App = () => {
     localStorage.setItem('ipa_unlocked_modules', JSON.stringify(Array.from(unlockedModules)));
   }, [unlockedModules]);
 
-  useEffect(() => {
-    localStorage.setItem('ipa_shown_refleksi_modules', JSON.stringify(Array.from(shownRefleksiModules)));
-  }, [shownRefleksiModules]);
-
-  useEffect(() => {
-    if (isLoggedIn && currentView === 'modul') {
-      const num = activeModule;
-      if (!shownRefleksiModules.has(num)) {
-        setShowRefleksiModal(true);
-        setShownRefleksiModules(prev => {
-          const next = new Set(prev);
-          next.add(num);
-          return next;
-        });
-      }
-    }
-  }, [currentView, activeModule, isLoggedIn, shownRefleksiModules]);
-
   // --- Derived Data ---
   const isTeacher = username.toLowerCase() === 'gurusmp';
   const modulePasswords: Record<number, string> = {
@@ -230,10 +198,12 @@ const App = () => {
     e.preventDefault();
     if (username.trim() && userClass.trim()) {
       const lastUser = localStorage.getItem('ipa_user');
+      const lastClass = localStorage.getItem('ipa_user_class');
       const currentUsername = username.trim();
+      const currentClass = userClass.trim();
 
-      // If user changed, reset progress
-      if (lastUser && lastUser !== currentUsername) {
+      // If user or class changed, reset progress
+      if ((lastUser && lastUser !== currentUsername) || (lastClass && lastClass !== currentClass)) {
         setUnlockedModules(new Set());
         setProgress({
           completedMaterials: [],
@@ -738,39 +708,13 @@ const App = () => {
                 exit={{ opacity: 0, x: -20 }}
               >
                 {activeModule === 1 && (
-                  <Modul1 
-                    theme={theme} 
-                    username={username}
-                    userClass={userClass}
-                    searchQuery={searchQuery}
-                    moduleNumber={activeModule}
-                    onRedirect={handleModuleRedirect}
-                    onComplete={() => {
-                      setProgress(prev => ({ ...prev, isIntroductionCompleted: true }));
-                      setCurrentView('home');
-                    }}
-                  />
+                  <Bab4Renderer theme={theme} username={username} userClass={userClass} title="GETARAN, GELOMBANG DAN CAHAYA" onComplete={() => setCurrentView('home')} />
                 )}
                 {activeModule === 2 && (
-                  <Modul2 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
+                  <Bab5Renderer theme={theme} username={username} userClass={userClass} title="UNSUR, SENYAWA, CAMPURAN" onComplete={() => setCurrentView('home')} />
                 )}
                 {activeModule === 3 && (
-                  <Modul3 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
-                )}
-                {activeModule === 4 && (
-                  <Modul4 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
-                )}
-                {activeModule === 5 && (
-                  <Modul5 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
-                )}
-                {activeModule === 6 && (
-                  <Modul6 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
-                )}
-                {activeModule === 7 && (
-                  <Modul7 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
-                )}
-                {activeModule === 8 && (
-                  <Modul8 theme={theme} username={username} userClass={userClass} searchQuery={searchQuery} moduleNumber={activeModule} onRedirect={handleModuleRedirect} onComplete={() => setCurrentView('home')} />
+                  <Bab6Renderer theme={theme} username={username} userClass={userClass} title="STRUKTUR BUMI" onComplete={() => setCurrentView('home')} />
                 )}
               </motion.div>
             )}
@@ -984,23 +928,6 @@ const App = () => {
                 className="relative z-10 w-full"
               >
                 <Rekap onBack={() => setCurrentView('home')} theme={theme} />
-              </motion.div>
-            )}
-
-            {currentView === 'refleksi' && (
-              <motion.div 
-                key="refleksi"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
-                className="relative z-10 w-full"
-              >
-                <Refleksi 
-                  theme={theme} 
-                  username={username} 
-                  userClass={userClass} 
-                  onComplete={() => setCurrentView('home')} 
-                />
               </motion.div>
             )}
           </AnimatePresence>
@@ -1230,49 +1157,6 @@ const App = () => {
               className="w-full py-3 text-slate-400 font-bold hover:text-white transition-colors text-xs uppercase tracking-widest"
             >
               Kembali Belajar
-            </button>
-          </div>
-        </div>
-      </Dialog>
-
-      {/* Refleksi Dialog (Friendly Reminder popup) */}
-      <Dialog 
-        show={showRefleksiModal && currentView !== 'refleksi'} 
-        onClose={() => setShowRefleksiModal(false)}
-        title="REFLEKSI AKHIR PROJEK"
-        icon={<Icons.Award size={24} className="text-amber-400 animate-pulse" />}
-        maxWidth="max-w-md"
-        disableBackdropClose={false}
-        hideCloseButton={false}
-      >
-        <div className="space-y-6 text-center text-white relative">
-          <div className="flex flex-col items-center">
-            <div className="w-20 h-20 rounded-[2rem] bg-amber-500/15 border-2 border-amber-500/40 flex items-center justify-center mb-5 animate-bounce relative">
-              <span className="text-4xl">🌱</span>
-            </div>
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-500/20 text-amber-400 text-[10px] md:text-xs font-black uppercase tracking-widest border border-amber-500/30 mb-3">
-              REFLEKSI INDIVIDU
-            </span>
-            <h4 className="text-xl font-black mb-3.5 uppercase tracking-wide text-amber-400">
-              LEMBAR REFLEKSI INDIVIDU
-            </h4>
-            <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-bold px-1 text-center font-sans">
-              Perhatian seluruh siswa! Hari ini kita telah mencapai akhir seluruh rangkaian kegiatan projek berkebun. 
-              <br /><br />
-              Kamu <strong className="text-amber-400 font-extrabold underline">diwajibkan</strong> mengisi <strong className="text-amber-400">LEMBAR REFLEKSI INDIVIDU</strong> di atas kertas selembar. Silakan pelajari draf pertanyaannya atau tulis jawabanmu sekarang!
-            </p>
-          </div>
-
-          <div className="pt-2 border-t border-white/5">
-            <button 
-              onClick={() => {
-                setShowRefleksiModal(false);
-                setCurrentView('refleksi');
-              }}
-              className="w-full py-4 bg-gradient-to-r from-[#008db0] via-amber-500 to-[#008db0] hover:scale-[1.02] active:scale-95 text-white font-black text-xs sm:text-sm uppercase tracking-widest rounded-2xl shadow-[0_10px_25px_rgba(0,141,176,0.3)] hover:shadow-[0_12px_30px_rgba(0,141,176,0.5)] border border-white/15 transition-all flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <Icons.FileText size={18} className="animate-pulse" />
-              <span>KERJAKAN HALAMAN REFLEKSI SEKARANG</span>
             </button>
           </div>
         </div>
