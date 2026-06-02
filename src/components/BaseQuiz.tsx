@@ -1,0 +1,377 @@
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  CheckCircle2, 
+  XCircle,
+  Trophy, 
+  RefreshCw, 
+  Zap, 
+  Loader2,
+  ArrowRight
+} from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { Theme } from '../types';
+import { ThemeButton } from './ThemeButton';
+
+interface Question {
+  id: number;
+  question: string;
+  options: { id: string; text: string }[];
+  correctId: string;
+}
+
+export interface BaseQuizProps {
+  theme: Theme;
+  title: string;
+  quizNumber: number;
+  questions: Question[];
+  storageKey: string;
+  onSuccess: (score: number) => void;
+  onRetry: () => void;
+}
+
+export const BaseQuiz: React.FC<BaseQuizProps> = ({ 
+  theme, 
+  title, 
+  quizNumber,
+  questions, 
+  storageKey,
+  onSuccess,
+  onRetry 
+}) => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState<Record<number, string>>({});
+  const [showResult, setShowResult] = useState(false);
+  const [direction, setDirection] = useState(0);
+  const [shuffledQuestions, setShuffledQuestions] = useState<Question[]>([]);
+  
+  // Persistence keys
+  const KEY_INDEX = `ipa_quiz_${storageKey}_currentIndex`;
+  const KEY_ANSWERS = `ipa_quiz_${storageKey}_answers`;
+  const KEY_SHUFFLED = `ipa_quiz_${storageKey}_shuffledQuestions`;
+  const KEY_SHOW_RESULT = `ipa_quiz_${storageKey}_showResult`;
+
+  const shuffleAndSet = () => {
+    if (!questions || questions.length === 0) return;
+    const shuffled = questions.map(q => ({
+      ...q,
+      options: [...q.options].sort(() => Math.random() - 0.5)
+    }));
+    setShuffledQuestions(shuffled);
+  };
+
+  useEffect(() => {
+    const savedIndex = localStorage.getItem(KEY_INDEX);
+    const savedAnswers = localStorage.getItem(KEY_ANSWERS);
+    const savedShuffled = localStorage.getItem(KEY_SHUFFLED);
+    const savedShowResult = localStorage.getItem(KEY_SHOW_RESULT);
+
+    if (savedIndex) setCurrentIndex(parseInt(savedIndex, 10));
+    if (savedAnswers) {
+      try {
+        setAnswers(JSON.parse(savedAnswers));
+      } catch (e) {
+        console.error("Failed to parse saved answers", e);
+      }
+    }
+    if (savedShowResult) setShowResult(savedShowResult === 'true');
+    
+    if (savedShuffled) {
+      try {
+        setShuffledQuestions(JSON.parse(savedShuffled));
+      } catch (e) {
+        shuffleAndSet();
+      }
+    } else {
+      shuffleAndSet();
+    }
+  }, [questions]);
+
+  useEffect(() => {
+    localStorage.setItem(KEY_INDEX, currentIndex.toString());
+  }, [currentIndex, KEY_INDEX]);
+
+  useEffect(() => {
+    localStorage.setItem(KEY_ANSWERS, JSON.stringify(answers));
+  }, [answers, KEY_ANSWERS]);
+
+  useEffect(() => {
+    if (shuffledQuestions.length > 0) {
+      localStorage.setItem(KEY_SHUFFLED, JSON.stringify(shuffledQuestions));
+    }
+  }, [shuffledQuestions, KEY_SHUFFLED]);
+
+  useEffect(() => {
+    localStorage.setItem(KEY_SHOW_RESULT, showResult.toString());
+  }, [showResult, KEY_SHOW_RESULT]);
+
+  if (shuffledQuestions.length === 0) {
+    return (
+      <div className="w-full min-h-[400px] flex flex-col items-center justify-center p-8 text-center space-y-4">
+        <Loader2 className="w-12 h-12 text-emerald-600 animate-spin" />
+        <p className="text-lg font-black text-slate-800">Menyiapkan Soal Kuis {quizNumber}...</p>
+      </div>
+    );
+  }
+
+  const currentQuestion = shuffledQuestions[currentIndex];
+  const totalQuestions = shuffledQuestions.length;
+  const answeredCount = Object.keys(answers).length;
+  const progressPercent = (answeredCount / totalQuestions) * 100;
+
+  const handleAnswer = (optionId: string) => {
+    setAnswers(prev => ({ ...prev, [currentQuestion?.id]: optionId }));
+  };
+
+  const nextQuestion = () => {
+    if (currentIndex < totalQuestions - 1) {
+      setDirection(1);
+      setCurrentIndex(prev => prev + 1);
+    }
+  };
+
+  const prevQuestion = () => {
+    if (currentIndex > 0) {
+      setDirection(-1);
+      setCurrentIndex(prev => prev - 1);
+    }
+  };
+
+  const calculateScore = () => {
+    let correct = 0;
+    shuffledQuestions.forEach(q => {
+      if (answers[q.id] === q.correctId) {
+        correct++;
+      }
+    });
+    return correct;
+  };
+
+  const handleFinish = async () => {
+    const score = calculateScore();
+    const percentage = Math.round((score / totalQuestions) * 100);
+    setShowResult(true);
+    
+    if (percentage >= 90) {
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#10b981', '#3b82f6', '#f59e0b']
+      });
+    }
+  };
+
+  const handleReset = () => {
+    localStorage.removeItem(KEY_INDEX);
+    localStorage.removeItem(KEY_ANSWERS);
+    localStorage.removeItem(KEY_SHUFFLED);
+    localStorage.removeItem(KEY_SHOW_RESULT);
+    setAnswers({});
+    setCurrentIndex(0);
+    setShowResult(false);
+    shuffleAndSet();
+    onRetry();
+  };
+
+  const handleSuccess = () => {
+    const score = calculateScore();
+    const percentage = Math.round((score / totalQuestions) * 100);
+    localStorage.removeItem(KEY_INDEX);
+    localStorage.removeItem(KEY_ANSWERS);
+    localStorage.removeItem(KEY_SHUFFLED);
+    localStorage.removeItem(KEY_SHOW_RESULT);
+    onSuccess(percentage);
+  };
+
+  const score = calculateScore();
+  const percentage = Math.round((score / totalQuestions) * 100);
+
+  if (showResult) {
+    const passed = percentage >= 90;
+    return (
+      <div className="w-full max-w-2xl mx-auto py-6">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-[3.5rem] shadow-2xl overflow-hidden border-4"
+          style={{ borderColor: theme.accent + '30' }}
+        >
+          <div className="p-8 text-center text-white space-y-2" style={{ backgroundColor: theme.bgSidebar }}>
+            <Trophy size={64} className="mx-auto mb-4" style={{ color: theme.accent }} />
+            <h2 className="text-3xl font-black">Hasil Kuis {quizNumber}</h2>
+            <p className="font-bold opacity-80 uppercase tracking-widest text-xs">{title}</p>
+          </div>
+
+          <div className="p-10 text-center space-y-8">
+            <div className="text-9xl font-black" style={{ color: passed ? '#10b981' : theme.bgMain }}>
+              {percentage}
+            </div>
+
+            <div className="bg-slate-50 p-8 rounded-[2rem] border-2 border-slate-100">
+              {passed ? (
+                <>
+                  <div className="flex justify-center text-emerald-500 mb-4"><CheckCircle2 size={48} /></div>
+                  <h3 className="text-2xl font-black mb-2 text-emerald-600">Luar Biasa!</h3>
+                  <p className="text-slate-600 font-bold">Kamu lulus kuis ini dengan nilai memuaskan.</p>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-center text-rose-500 mb-4"><XCircle size={48} /></div>
+                  <h3 className="text-2xl font-black mb-2 text-rose-600">Belum Lulus</h3>
+                  <p className="text-slate-600 font-bold">Syarat minimal nilai adalah 90. Jangan menyerah, ulangi lagi dan pastikan kamu bisa menjawab dengan benar.</p>
+                </>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 max-w-xs mx-auto">
+              {passed ? (
+                <ThemeButton 
+                  theme={theme}
+                  onClick={handleSuccess}
+                  fullWidth
+                  style={{ backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' }}
+                >
+                  <span>Lanjut</span>
+                  <ArrowRight size={20} />
+                </ThemeButton>
+              ) : (
+                <ThemeButton 
+                  theme={theme}
+                  onClick={handleReset}
+                  fullWidth
+                  style={{ backgroundColor: '#f43f5e', background: '#f43f5e', color: '#ffffff' }}
+                >
+                  <RefreshCw size={20} />
+                  <span>Ulangi Kuis</span>
+                </ThemeButton>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border-2 border-white/60 flex justify-between items-center px-6">
+        <div className="flex items-center gap-3 min-w-0">
+          <Zap className="text-yellow-500 fill-yellow-500 flex-shrink-0" size={24} />
+          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-sm md:text-base">Kuis {quizNumber}: {title}</h2>
+        </div>
+        <div className="text-xl font-black text-emerald-600">
+          {currentIndex + 1}<span className="text-slate-300 text-sm">/{totalQuestions}</span>
+        </div>
+      </div>
+
+      <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-1 shadow-inner">
+        <motion.div 
+          animate={{ width: `${progressPercent}%` }}
+          className="h-full bg-emerald-500 rounded-full transition-all"
+        />
+      </div>
+
+      <div className="relative min-h-[300px]">
+        <AnimatePresence mode="wait" custom={direction}>
+          <motion.div
+            key={currentIndex}
+            custom={direction}
+            initial={{ x: direction * 50, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: -direction * 50, opacity: 0 }}
+            className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-2 border-slate-50 space-y-6"
+          >
+            <h3 className="text-lg md:text-xl font-black text-slate-800 leading-snug text-justify whitespace-pre-line">
+              {currentQuestion?.question}
+            </h3>
+
+            <div className="grid grid-cols-1 gap-3">
+              {currentQuestion?.options.map((option: any) => {
+                const isSelected = answers[currentQuestion?.id] === option.id;
+                return (
+                    <ThemeButton
+                      key={option.id}
+                      theme={theme}
+                      variant={isSelected ? 'primary' : 'secondary'}
+                      onClick={() => handleAnswer(option.id)}
+                      fullWidth
+                      className="text-left justify-start px-6"
+                      style={isSelected ? { backgroundColor: theme.accent } : { color: '#1e293b', border: '2px solid #f1f5f9' }}
+                    >
+                      <span className="leading-tight">{option.text}</span>
+                    </ThemeButton>
+                );
+              })}
+            </div>
+          </motion.div>
+        </AnimatePresence>
+      </div>
+
+      <div className="flex justify-between items-center gap-4">
+        <ThemeButton
+          theme={theme}
+          onClick={prevQuestion}
+          disabled={currentIndex === 0}
+          className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2`}
+          style={currentIndex > 0 
+            ? { backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' } 
+            : { color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' }
+          }
+        >
+          <ChevronLeft size={16} />
+          <span>Sebelumnya</span>
+        </ThemeButton>
+
+        {currentIndex === totalQuestions - 1 ? (
+          <ThemeButton
+            theme={theme}
+            onClick={handleFinish}
+            disabled={answeredCount < totalQuestions}
+            fullWidth
+            className="flex-1 flex items-center justify-center gap-2"
+            style={{ backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' }}
+          >
+            <span>Selesaikan Kuis</span>
+            <CheckCircle2 size={16} />
+          </ThemeButton>
+        ) : (
+          <ThemeButton
+            theme={theme}
+            onClick={nextQuestion}
+            fullWidth
+            className="flex-1 flex items-center justify-center gap-2"
+            style={{ backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' }}
+          >
+            <span>Selanjutnya</span>
+            <ChevronRight size={16} />
+          </ThemeButton>
+        )}
+      </div>
+
+      {/* Navigation Grid */}
+      <div className="bg-white/50 p-6 rounded-3xl border-2 border-white/60">
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
+          {shuffledQuestions.map((q, idx) => (
+            <button
+              key={q.id}
+              onClick={() => setCurrentIndex(idx)}
+              className={`h-10 rounded-xl font-black text-xs transition-all ${
+                currentIndex === idx 
+                  ? 'text-white scale-110 shadow-lg' 
+                  : answers[q.id] 
+                    ? 'bg-emerald-200 text-emerald-700' 
+                    : 'bg-white text-slate-400'
+              }`}
+              style={currentIndex === idx ? { backgroundColor: theme.accent } : {}}
+            >
+              {idx + 1}
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
