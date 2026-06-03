@@ -64,6 +64,14 @@ const App = () => {
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
   const [isInstallable, setIsInstallable] = useState<boolean>(false);
   const [showIOSInstallGuide, setShowIOSInstallGuide] = useState<boolean>(false);
+  const [userHistory, setUserHistory] = useState<Array<{ username: string; userClass: string }>>(() => {
+    try {
+      const saved = localStorage.getItem('ipa_user_history');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
   
   // Progress State
   const [progress, setProgress] = useState<UserProgress>({
@@ -270,6 +278,7 @@ const App = () => {
     e.preventDefault();
     if (username.trim() && userClass.trim()) {
       const currentUsername = username.trim();
+      const currentClass = userClass.trim();
 
       setIsLoggedIn(true);
       setProgress(prev => ({ ...prev, username: currentUsername }));
@@ -277,9 +286,59 @@ const App = () => {
       
       // Save for next time
       localStorage.setItem('ipa_user', currentUsername);
-      localStorage.setItem('ipa_user_class', userClass);
+      localStorage.setItem('ipa_user_class', currentClass);
       localStorage.setItem('ipa_is_logged_in', 'true');
+
+      // Update login history
+      setUserHistory(prev => {
+        let updated = prev.filter(item => 
+          !(item.username.toLowerCase() === currentUsername.toLowerCase() && item.userClass === currentClass)
+        );
+        updated.unshift({ username: currentUsername, userClass: currentClass });
+        if (updated.length > 15) {
+          updated = updated.slice(0, 15);
+        }
+        localStorage.setItem('ipa_user_history', JSON.stringify(updated));
+        return updated;
+      });
     }
+  };
+
+  const handleQuickLogin = (selectedUser: string, selectedClass: string) => {
+    const currentUsername = selectedUser.trim();
+    const currentClass = selectedClass.trim();
+
+    setUsername(currentUsername);
+    setUserClass(currentClass);
+    setIsLoggedIn(true);
+    setCurrentView('home');
+
+    localStorage.setItem('ipa_user', currentUsername);
+    localStorage.setItem('ipa_user_class', currentClass);
+    localStorage.setItem('ipa_is_logged_in', 'true');
+
+    // Move to top of history
+    setUserHistory(prev => {
+      let updated = prev.filter(item => 
+        !(item.username.toLowerCase() === currentUsername.toLowerCase() && item.userClass === currentClass)
+      );
+      updated.unshift({ username: currentUsername, userClass: currentClass });
+      if (updated.length > 15) {
+        updated = updated.slice(0, 15);
+      }
+      localStorage.setItem('ipa_user_history', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleDeleteHistory = (targetUser: string, targetClass: string) => {
+    setUserHistory(prev => {
+      const updated = prev.filter(item => 
+        !(item.username === targetUser && item.userClass === targetClass)
+      );
+      localStorage.setItem('ipa_user_history', JSON.stringify(updated));
+      return updated;
+    });
   };
 
   const handleLogout = () => {
@@ -438,6 +497,9 @@ const App = () => {
         userClass={userClass}
         setUserClass={setUserClass}
         onLogin={handleLogin} 
+        userHistory={userHistory}
+        onQuickLogin={handleQuickLogin}
+        onDeleteHistory={handleDeleteHistory}
       />
     );
   }

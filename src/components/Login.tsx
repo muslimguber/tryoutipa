@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { GardenDecorations } from './GardenDecorations';
+import { User, Trash2, History } from 'lucide-react';
 
 interface LoginProps {
   username: string;
@@ -8,12 +9,25 @@ interface LoginProps {
   userClass: string;
   setUserClass: (className: string) => void;
   onLogin: (e: React.FormEvent) => void;
+  userHistory?: Array<{ username: string; userClass: string }>;
+  onQuickLogin?: (username: string, userClass: string) => void;
+  onDeleteHistory?: (username: string, userClass: string) => void;
 }
 
 /**
  * Login component for the name input screen.
  */
-export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, setUserClass, onLogin }) => {
+export const Login: React.FC<LoginProps> = ({ 
+  username, 
+  setUsername, 
+  userClass, 
+  setUserClass, 
+  onLogin,
+  userHistory = [],
+  onQuickLogin,
+  onDeleteHistory
+}) => {
+  const [showDropdown, setShowDropdown] = React.useState(false);
   const classes = ['8A', '8B', '8C', '8D', '8E', '8F', '8G', '8H', '8I'];
 
   return (
@@ -58,23 +72,101 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
           {/* Name & Class Input Section */}
           <div className="fade-up-d3 mt-4 w-full max-w-xs md:max-w-sm">
             <form onSubmit={onLogin} className="flex flex-col gap-3">
-              <input 
-                type="text" 
-                value={username}
-                onChange={(e) => {
-                  const val = e.target.value.toUpperCase();
-                  setUsername(val);
-                  if (val.toLowerCase() === 'gurusmp') {
-                    setUserClass('guru');
-                  } else if (userClass === 'guru') {
-                    setUserClass('');
-                  }
-                }}
-                placeholder="MASUKKAN NAMA ANDA" 
-                className="w-full px-5 py-3.5 rounded-md text-center text-base md:text-lg font-bold border-2 transition-all outline-none" 
-                style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#bfdbfe', color: '#0a018e' }}
-                required
-              /> 
+              <div className="relative w-full">
+                <input 
+                  type="text" 
+                  value={username}
+                  onFocus={() => setShowDropdown(true)}
+                  onBlur={() => {
+                    // Slight delay to allow clicking deletion button if needed, 
+                    // although onMouseDown handles item selection instantly.
+                    setTimeout(() => setShowDropdown(false), 200);
+                  }}
+                  onChange={(e) => {
+                    const val = e.target.value.toUpperCase();
+                    setUsername(val);
+                    setShowDropdown(true);
+                    if (val.toLowerCase() === 'gurusmp') {
+                      setUserClass('guru');
+                    } else if (userClass === 'guru') {
+                      setUserClass('');
+                    }
+                  }}
+                  placeholder="MASUKKAN NAMA ANDA" 
+                  className="w-full px-5 py-3.5 rounded-md text-center text-base md:text-lg font-bold border-2 transition-all outline-none" 
+                  style={{ background: 'rgba(255,255,255,0.95)', borderColor: '#bfdbfe', color: '#0a018e' }}
+                  required
+                /> 
+
+                {/* Dropdown for Student History */}
+                {showDropdown && userHistory && userHistory.length > 0 && (
+                  <div className="absolute left-0 right-0 bottom-full mb-1.5 bg-white border-2 border-indigo-200 rounded-xl shadow-2xl z-50 overflow-hidden max-h-56 overflow-y-auto divide-y divide-slate-100 animate-in fade-in slide-in-from-bottom-1 duration-150">
+                    {(() => {
+                      const filtered = userHistory;
+
+                      if (filtered.length === 0) {
+                        return (
+                          <div className="px-4 py-3.5 text-xs text-slate-400 font-bold text-center">
+                            Nama Tidak Ditemukan di Riwayat
+                          </div>
+                        );
+                      }
+
+                      return filtered.map((item, idx) => {
+                        const initials = item.username
+                          .trim()
+                          .split(/\s+/)
+                          .map(word => word[0])
+                          .slice(0, 2)
+                          .join('')
+                          .toUpperCase();
+
+                        return (
+                          <div 
+                            key={`${item.username}-${item.userClass}-${idx}`}
+                            onMouseDown={(e) => {
+                              // Don't trigger blur
+                              e.preventDefault();
+                              setUsername(item.username.toUpperCase());
+                              setUserClass(item.userClass);
+                              setShowDropdown(false);
+                            }}
+                            className="flex items-center justify-between px-3.5 py-2.5 hover:bg-slate-50 transition-colors pointer-events-auto cursor-pointer text-left"
+                          >
+                            <div className="flex items-center gap-2 max-w-[70%] min-w-0">
+                              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex flex-shrink-0 items-center justify-center font-bold text-[10px] text-white shadow-inner">
+                                {initials || <User size={10} />}
+                              </div>
+                              <div className="min-w-0">
+                                <h4 className="text-xs font-bold text-slate-800 truncate leading-tight">{item.username}</h4>
+                                <p className="text-[10px] font-semibold text-slate-400">Kelas {item.userClass}</p>
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-1.5">
+                              <span className="text-[10px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-600 px-2.5 py-1 rounded-md border border-indigo-100">
+                                Pilih
+                              </span>
+                              <button
+                                type="button"
+                                onMouseDown={(e) => {
+                                  e.stopPropagation();
+                                  e.preventDefault();
+                                  onDeleteHistory?.(item.username, item.userClass);
+                                }}
+                                className="p-1.5 text-slate-300 hover:text-rose-500 hover:bg-rose-50 rounded-md transition-colors"
+                                title="Hapus dari riwayat"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      });
+                    })()}
+                  </div>
+                )}
+              </div>
 
               <select
                 value={userClass}
@@ -93,7 +185,7 @@ export const Login: React.FC<LoginProps> = ({ username, setUsername, userClass, 
 
               <button 
                 type="submit" 
-                className="btn-garden pulse-glow inline-flex items-center justify-center gap-3 px-10 py-5 rounded-md text-xl font-bold tracking-wide mt-2" 
+                className="btn-garden pulse-glow inline-flex items-center justify-center gap-3 px-10 py-5 rounded-md text-xl font-bold tracking-wide mt-2 w-full" 
                 style={{ background: 'linear-gradient(135deg, #1d4ed8, #1e3a8a)', color: '#fff', border: 'none', cursor: 'pointer' }}
               > 
                 <span>MASUK</span> 
