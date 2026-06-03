@@ -267,7 +267,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
           <div className="p-2 rounded-2xl bg-gradient-to-br" style={{ backgroundImage: `linear-gradient(to bottom right, ${theme.accent}, ${theme.bgMain})` }}>
             <Zap className="text-white fill-white flex-shrink-0" size={24} />
           </div>
-          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-lg md:text-xl">Kuis {quizNumber}: <span style={{ color: theme.accent }}>{title}</span></h2>
+          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-base md:text-lg">Kuis {quizNumber}: <span style={{ color: theme.accent }}>{title}</span></h2>
         </div>
         <div className="text-2xl font-black relative z-10" style={{ color: theme.bgMain }}>
           {currentIndex + 1}<span className="text-slate-300 text-sm">/{totalQuestions}</span>
@@ -297,7 +297,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-5" style={{ backgroundColor: theme.accent }} />
             <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full opacity-5" style={{ backgroundColor: theme.bgMain }} />
             
-            <h3 className="text-xl md:text-2xl font-black text-slate-800 leading-snug text-justify whitespace-pre-line relative z-10">
+            <h3 className="text-lg md:text-xl font-bold text-slate-800 leading-relaxed text-justify whitespace-pre-line relative z-10">
               {currentQuestion?.question}
             </h3>
 
@@ -311,22 +311,22 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleAnswer(option.id)}
-                      className={`w-full text-left flex items-start sm:items-center p-4 sm:p-5 rounded-2xl font-bold transition-all duration-300 border-2 ${
+                      className={`w-full text-left flex items-start sm:items-center p-3 sm:p-4 rounded-xl font-semibold transition-all duration-300 border-2 ${
                         isSelected 
-                          ? 'shadow-lg text-white scale-[1.02]' 
-                          : 'bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 border-slate-100 hover:shadow-md'
+                          ? 'shadow-md text-white scale-[1.01]' 
+                          : 'bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 border-slate-100 hover:shadow-sm'
                       }`}
                       style={isSelected ? { 
                         background: `linear-gradient(135deg, ${theme.accent}, ${theme.bgSidebar})`,
                         borderColor: theme.bgMain
                       } : {}}
                     >
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black mr-4 shrink-0 shadow-sm ${
+                      <div className={`w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold mr-3 shrink-0 shadow-sm transition-colors ${
                         isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
                       }`}>
                         {labels[index]}
                       </div>
-                      <span className="leading-snug text-base sm:text-lg">{option.text}</span>
+                      <span className="leading-snug text-sm sm:text-base">{option.text}</span>
                     </motion.button>
                 );
               })}
@@ -340,14 +340,14 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
           theme={theme}
           onClick={prevQuestion}
           disabled={currentIndex === 0}
-          className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2 px-6 py-4 rounded-2xl`}
+          className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2 px-5 py-3 rounded-xl`}
           style={currentIndex > 0 
             ? { background: `linear-gradient(to right, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' } 
             : { color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' }
           }
         >
-          <ChevronLeft size={20} />
-          <span className="font-bold text-lg hidden sm:inline">Sebelumnya</span>
+          <ChevronLeft size={18} />
+          <span className="font-bold text-sm sm:text-base hidden sm:inline">Sebelumnya</span>
         </ThemeButton>
 
         {currentIndex === totalQuestions - 1 ? (
@@ -356,7 +356,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             onClick={handleFinish}
             disabled={answeredCount < totalQuestions}
             fullWidth
-            className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-lg font-black"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-base font-bold"
             style={answeredCount < totalQuestions ? {
                color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' 
             } : { 
@@ -365,18 +365,18 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             }}
           >
             <span>Selesaikan Kuis</span>
-            <CheckCircle2 size={24} />
+            <CheckCircle2 size={20} />
           </ThemeButton>
         ) : (
           <ThemeButton
             theme={theme}
             onClick={nextQuestion}
             fullWidth
-            className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-lg font-black"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-base font-bold"
             style={{ background: `linear-gradient(to left, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' }}
           >
             <span>Selanjutnya</span>
-            <ChevronRight size={24} />
+            <ChevronRight size={20} />
           </ThemeButton>
         )}
       </div>

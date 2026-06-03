@@ -1,13 +1,41 @@
 import React, { useState } from 'react';
-import { Save, CheckCircle2, Loader2, Award } from 'lucide-react';
+import { Save, CheckCircle2, Loader2, Award, ExternalLink } from 'lucide-react';
 
 export const HasilBab4 = ({ scores, username, userClass, onKirim }: any) => {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const isGuru = username?.toLowerCase() === 'gurusmp';
+
   const handleKirim = () => {
     setLoading(true);
-    setTimeout(() => { setLoading(false); setSuccess(true); setTimeout(onKirim, 2000); }, 1500);
+    
+    const formData = new URLSearchParams();
+    formData.append("entry.1357613309", username || "");
+    formData.append("entry.179734801", userClass || "");
+    formData.append("entry.724666537", (scores[0] || 0).toString());
+    formData.append("entry.785433519", (scores[1] || 0).toString());
+    formData.append("entry.1989871815", (scores[2] || 0).toString());
+    formData.append("entry.2076904742", (scores[3] || 0).toString());
+
+    fetch("https://docs.google.com/forms/d/e/1FAIpQLSdhMwVQMFeMO4ZmM-rLqUFwTdMkgZA_FRZ25-gfxYh6x6CcVw/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: formData.toString()
+    })
+    .then(() => {
+      setLoading(false);
+      setSuccess(true);
+      setTimeout(onKirim, 2000);
+    })
+    .catch((error) => {
+      console.error("Error submitting form:", error);
+      setLoading(false);
+      alert("Terjadi kesalahan saat mengirim nilai.");
+    });
   };
 
   return (
@@ -28,9 +56,23 @@ export const HasilBab4 = ({ scores, username, userClass, onKirim }: any) => {
       {success ? (
         <div className="p-4 bg-emerald-50 text-emerald-700 rounded-2xl font-bold flex flex-col items-center"><CheckCircle2 size={32}/>Berhasil Dikirim!</div>
       ) : (
-        <button onClick={handleKirim} disabled={loading} className="w-full py-4 rounded-xl bg-blue-600 text-white font-black uppercase flex items-center justify-center gap-2">
+        <button onClick={handleKirim} disabled={loading} className="w-full py-4 rounded-xl bg-blue-600 hover:bg-blue-700 transition-colors text-white font-black uppercase flex items-center justify-center gap-2 mb-4 shadow-lg shadow-blue-600/30">
           {loading ? <Loader2 size={24} className="animate-spin"/> : <><Save size={20} /> KIRIM NILAI</>}
         </button>
+      )}
+
+      {isGuru && (
+        <div className="mt-8 pt-6 border-t-2 border-slate-100">
+          <a
+            href="https://docs.google.com/spreadsheets/d/17X97yKtPfO_I2BKtlDyQiFuGE6891b-SJWZ7Z2xE-g0/edit?usp=sharing"
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-2 text-blue-600 bg-blue-50 px-6 py-3 rounded-xl font-bold hover:bg-blue-100 transition-colors focus:ring-4 focus:ring-blue-100"
+          >
+            <ExternalLink size={20} />
+            Buka Spreadsheet Rekap Nilai Bab 4
+          </a>
+        </div>
       )}
     </div>
   );
