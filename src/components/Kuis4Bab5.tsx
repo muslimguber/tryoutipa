@@ -3,7 +3,7 @@ import { BaseQuiz } from './BaseQuiz';
 import { KUIS4_BAB5_QUESTIONS } from '../data/Kuis4Bab5';
 import { Theme } from '../types';
 
-export const Kuis4Bab5 = ({ theme, onSuccess, onRetry }: { theme: Theme, onSuccess: (score: number) => void, onRetry: () => void }) => {
+export const Kuis4Bab5 = ({ theme, onSuccess, onRetry, isGuru }: { theme: Theme, onSuccess: (score: number) => void, onRetry: () => void, isGuru?: boolean }) => {
   return (
     <BaseQuiz
       theme={theme}
@@ -13,6 +13,7 @@ export const Kuis4Bab5 = ({ theme, onSuccess, onRetry }: { theme: Theme, onSucce
       storageKey="bab5_kuis4"
       onSuccess={onSuccess}
       onRetry={onRetry}
+      isGuru={isGuru}
     />
   );
 };

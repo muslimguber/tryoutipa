@@ -10,11 +10,10 @@ import { HasilBab5 } from './HasilBab5';
 const TABS = ["Materi", "Kuis 1", "Kuis 2", "Kuis 3", "Kuis 4", "Hasil"];
 
 export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: any) => {
-  const [step, setStep] = useState(0); 
-  const [scores, setScores] = useState<number[]>([0, 0, 0, 0]);
-  const [highestStep, setHighestStep] = useState(0);
-
   const isGuru = username?.toLowerCase() === 'gurusmp';
+  const [step, setStep] = useState(0); 
+  const [scores, setScores] = useState<number[]>(isGuru ? [100, 100, 100, 100] : [0, 0, 0, 0]);
+  const [highestStep, setHighestStep] = useState(0);
 
   const handleNextMateri = () => {
     setStep(1);
@@ -41,10 +40,10 @@ export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: 
   const renderStep = () => {
     switch(step) {
       case 0: return <MateriBab5 onNext={handleNextMateri} title={title} />;
-      case 1: return <Kuis1Bab5 theme={theme} onSuccess={(s: number) => handleKuisSuccess(0, s)} onRetry={() => {}} />;
-      case 2: return <Kuis2Bab5 theme={theme} onSuccess={(s: number) => handleKuisSuccess(1, s)} onRetry={() => {}} />;
-      case 3: return <Kuis3Bab5 theme={theme} onSuccess={(s: number) => handleKuisSuccess(2, s)} onRetry={() => {}} />;
-      case 4: return <Kuis4Bab5 theme={theme} onSuccess={(s: number) => handleKuisSuccess(3, s)} onRetry={() => {}} />;
+      case 1: return <Kuis1Bab5 theme={theme} isGuru={isGuru} onSuccess={(s: number) => handleKuisSuccess(0, s)} onRetry={() => {}} />;
+      case 2: return <Kuis2Bab5 theme={theme} isGuru={isGuru} onSuccess={(s: number) => handleKuisSuccess(1, s)} onRetry={() => {}} />;
+      case 3: return <Kuis3Bab5 theme={theme} isGuru={isGuru} onSuccess={(s: number) => handleKuisSuccess(2, s)} onRetry={() => {}} />;
+      case 4: return <Kuis4Bab5 theme={theme} isGuru={isGuru} onSuccess={(s: number) => handleKuisSuccess(3, s)} onRetry={() => {}} />;
       case 5: return <HasilBab5 scores={scores} username={username} userClass={userClass} onKirim={onComplete} />;
       default: return null;
     }
@@ -53,7 +52,7 @@ export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: 
   return (
     <div className="w-full flex flex-col items-center justify-start py-8 px-4">
       {/* Tabs Menu */}
-      <div className="w-full max-w-4xl mb-6 bg-white p-2 rounded-2xl shadow-sm border-2 border-slate-100 flex overflow-x-auto">
+      <div className="w-full max-w-5xl mb-8 flex justify-between sm:justify-center items-center gap-3 overflow-x-auto pb-4 scrollbar-hide px-2">
         {TABS.map((tab, idx) => {
           const isUnlocked = isGuru || idx <= highestStep;
           const isActive = step === idx;
@@ -62,12 +61,12 @@ export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: 
               key={idx}
               onClick={() => handleTabClick(idx)}
               disabled={!isUnlocked}
-              className={`flex-1 min-w-[80px] py-3 px-4 rounded-xl text-sm font-bold transition-all whitespace-nowrap ${
+              className={`min-w-[100px] py-3 px-6 rounded-2xl text-sm font-black transition-all duration-300 whitespace-nowrap shadow-sm border-b-4 ${
                 isActive 
-                  ? 'bg-emerald-500 text-white shadow-md' 
+                  ? 'bg-emerald-500 text-white border-emerald-700 transform -translate-y-1 scale-105' 
                   : isUnlocked
-                    ? 'text-slate-600 hover:bg-slate-100'
-                    : 'text-slate-300 cursor-not-allowed'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:-translate-y-0.5'
+                    : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-70'
               }`}
             >
               {tab}

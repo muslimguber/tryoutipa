@@ -30,6 +30,7 @@ export interface BaseQuizProps {
   storageKey: string;
   onSuccess: (score: number) => void;
   onRetry: () => void;
+  isGuru?: boolean;
 }
 
 export const BaseQuiz: React.FC<BaseQuizProps> = ({ 
@@ -39,7 +40,8 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
   questions, 
   storageKey,
   onSuccess,
-  onRetry 
+  onRetry,
+  isGuru
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string>>({});
@@ -60,6 +62,14 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
       options: [...q.options].sort(() => Math.random() - 0.5)
     }));
     setShuffledQuestions(shuffled);
+
+    if (isGuru) {
+      const idealAnswers: Record<number, string> = {};
+      shuffled.forEach((q: any) => {
+        idealAnswers[q.id] = q.correctId;
+      });
+      setAnswers(idealAnswers);
+    }
   };
 
   useEffect(() => {
@@ -81,13 +91,21 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
     if (savedShuffled) {
       try {
         setShuffledQuestions(JSON.parse(savedShuffled));
+        if (isGuru) {
+            const parsed = JSON.parse(savedShuffled);
+            const idealAnswers: Record<number, string> = {};
+            parsed.forEach((q: any) => {
+              idealAnswers[q.id] = q.correctId;
+            });
+            setAnswers(idealAnswers);
+        }
       } catch (e) {
         shuffleAndSet();
       }
     } else {
       shuffleAndSet();
     }
-  }, [questions]);
+  }, [questions, isGuru]);
 
   useEffect(() => {
     localStorage.setItem(KEY_INDEX, currentIndex.toString());
