@@ -52,7 +52,7 @@ export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: 
   return (
     <div className="w-full flex flex-col items-center justify-start py-8 px-4">
       {/* Tabs Menu */}
-      <div className="w-full max-w-5xl mb-8 flex justify-between sm:justify-center items-center gap-3 overflow-x-auto pb-4 scrollbar-hide px-2">
+      <div className="w-full max-w-4xl mb-6 bg-emerald-900/80 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl flex items-stretch justify-between gap-1 shadow-lg backdrop-blur-md border border-white/10 overflow-hidden">
         {TABS.map((tab, idx) => {
           const isUnlocked = isGuru || idx <= highestStep;
           const isActive = step === idx;
@@ -61,15 +61,16 @@ export const Bab5Renderer = ({ theme, username, userClass, title, onComplete }: 
               key={idx}
               onClick={() => handleTabClick(idx)}
               disabled={!isUnlocked}
-              className={`min-w-[100px] py-3 px-6 rounded-2xl text-sm font-black transition-all duration-300 whitespace-nowrap shadow-sm border-b-4 ${
+              className={`flex-1 min-w-0 py-2 sm:py-3 rounded-lg sm:rounded-xl text-[10px] sm:text-sm font-bold transition-all duration-300 tracking-tight flex items-center justify-center ${
                 isActive 
-                  ? 'bg-emerald-500 text-white border-emerald-700 transform -translate-y-1 scale-105' 
+                  ? 'bg-emerald-500 text-white shadow-md sm:scale-105' 
                   : isUnlocked
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100 hover:-translate-y-0.5'
-                    : 'bg-slate-100 text-slate-400 border-slate-200 cursor-not-allowed opacity-70'
+                    ? 'bg-white/10 text-white/90 hover:bg-white/20'
+                    : 'bg-transparent text-white/30 cursor-not-allowed'
               }`}
             >
-              {tab}
+              <span className="hidden sm:inline whitespace-nowrap">{tab}</span>
+              <span className="sm:hidden whitespace-nowrap">{tab.replace('Kuis ', 'K')}</span>
             </button>
           )
         })}

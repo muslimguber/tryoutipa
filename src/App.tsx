@@ -506,7 +506,7 @@ const App = () => {
             <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${currentView === 'rekap' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-300'}`}>
               <Icons.GraduationCap size={13} />
             </div>
-            <span>Daftar Nilai</span>
+            <span>Nilai Tryout</span>
             <div className="absolute right-3 top-1/2 -translate-y-1/2 flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>

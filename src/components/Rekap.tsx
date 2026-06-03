@@ -34,34 +34,29 @@ export const Rekap: React.FC<RekapProps> = ({ onBack, theme }) => {
 
   const MODULES_CONFIG = [
     {
-      id: 1,
-      title: "Nilai Modul 1",
-      subtitle: "Mengapa Berkebun itu Penting?",
-      sheetUrl: "https://docs.google.com/spreadsheets/d/1PQywXD1s-NPxnJPzw_vinTG-lvYn24FBQsLP-_LazeY/edit?usp=sharing",
-      embedUrl: "https://docs.google.com/spreadsheets/d/1PQywXD1s-NPxnJPzw_vinTG-lvYn24FBQsLP-_LazeY/preview",
+      id: 4,
+      title: "Nilai Tryout Bab 4",
+      subtitle: "Getaran, Gelombang, dan Cahaya",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/17X97yKtPfO_I2BKtlDyQiFuGE6891b-SJWZ7Z2xE-g0/edit?usp=sharing",
+      embedUrl: "https://docs.google.com/spreadsheets/d/17X97yKtPfO_I2BKtlDyQiFuGE6891b-SJWZ7Z2xE-g0/preview",
       available: true
     },
     {
-      id: 2,
-      title: "Nilai Modul 2",
-      subtitle: "Mengenal Tanaman Sayuran",
-      sheetUrl: "https://docs.google.com/spreadsheets/d/1BzZ1lxqbmbY36KLjKMpIdItHvcj0S4RR2CgXVhf8f3w/edit?usp=sharing",
-      embedUrl: "https://docs.google.com/spreadsheets/d/1BzZ1lxqbmbY36KLjKMpIdItHvcj0S4RR2CgXVhf8f3w/preview",
+      id: 5,
+      title: "Nilai Tryout Bab 5",
+      subtitle: "Unsur, Senyawa, dan Campuran",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/1igKlBex1-P1KnMctXGLJ-FyUZ1x5CNX-4GPZs5gYat4/edit?usp=sharing",
+      embedUrl: "https://docs.google.com/spreadsheets/d/1igKlBex1-P1KnMctXGLJ-FyUZ1x5CNX-4GPZs5gYat4/preview",
       available: true
     },
     {
-      id: 3,
-      title: "Nilai Modul 3",
-      subtitle: "Membuat Kompos",
-      sheetUrl: "https://docs.google.com/spreadsheets/d/1xj49kl2EsjWO6Fl01-7oKZLh2IBzyLJLx0vezWRXibk/edit?usp=sharing",
-      embedUrl: "https://docs.google.com/spreadsheets/d/1xj49kl2EsjWO6Fl01-7oKZLh2IBzyLJLx0vezWRXibk/preview",
+      id: 6,
+      title: "Nilai Tryout Bab 6",
+      subtitle: "Struktur Bumi dan Perkembangannya",
+      sheetUrl: "https://docs.google.com/spreadsheets/d/1wmegNlkFtYoL8TSG94VoYM0KGy9sCNe7R6KADuQ5RXQ/edit?usp=sharing",
+      embedUrl: "https://docs.google.com/spreadsheets/d/1wmegNlkFtYoL8TSG94VoYM0KGy9sCNe7R6KADuQ5RXQ/preview",
       available: true
-    },
-    { id: 4, title: "Nilai Modul 4", subtitle: "Perawatan Tanaman Sawi", available: false },
-    { id: 5, title: "Nilai Modul 5", subtitle: "Kendala & Hama Penyakit Sawi", available: false },
-    { id: 6, title: "Nilai Modul 6", subtitle: "Panen & Pascapanen Sawi", available: false },
-    { id: 7, title: "Nilai Modul 7", subtitle: "Pascapanen & Pengolahan Hasil Sawi", available: false },
-    { id: 8, title: "Nilai Modul 8", subtitle: "Rencana Usaha Kelompok", available: false }
+    }
   ];
 
   const currentModuleData = selectedModule ? MODULES_CONFIG.find(m => m.id === selectedModule) : null;
@@ -188,7 +183,7 @@ export const Rekap: React.FC<RekapProps> = ({ onBack, theme }) => {
                     className="px-3.5 py-2 rounded-xl font-bold text-[11px] uppercase tracking-wider transition-all active:scale-95 bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 flex items-center justify-center gap-1.5"
                   >
                     <ArrowLeft size={13} />
-                    <span>Ganti Modul</span>
+                    <span>Ganti Tryout</span>
                   </button>
 
                   <a
