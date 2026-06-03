@@ -639,7 +639,7 @@ const App = () => {
         </div>
 
         {/* Sidebar Footer (Prominent) */}
-        <div className="border-t border-white/10 px-3 py-4 pb-12 space-y-2">
+        <div className="border-t border-white/10 px-3 py-4 pb-20 space-y-2">
           <div className="flex gap-2">
             <button 
               onClick={() => {
