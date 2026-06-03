@@ -310,8 +310,8 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
                           : 'bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 border-slate-100 hover:shadow-sm'
                       }`}
                       style={isSelected ? { 
-                        background: `linear-gradient(135deg, ${theme.accent}, ${theme.bgSidebar})`,
-                        borderColor: theme.bgMain
+                        backgroundColor: theme.bgMain,
+                        borderColor: theme.accent
                       } : {}}
                     >
                       <div className={`w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold mr-2 shrink-0 shadow-sm transition-colors ${
@@ -335,7 +335,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
           disabled={currentIndex === 0}
           className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2 px-5 py-3 rounded-xl`}
           style={currentIndex > 0 
-            ? { background: `linear-gradient(to right, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' } 
+            ? { backgroundColor: theme.bgMain, color: '#ffffff' } 
             : { color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' }
           }
         >
@@ -353,7 +353,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             style={answeredCount < totalQuestions ? {
                color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' 
             } : { 
-               background: `linear-gradient(45deg, ${theme.accent}, ${theme.bgMain})`, color: '#ffffff',
+               backgroundColor: theme.accent, color: '#ffffff',
                boxShadow: `0 10px 25px -5px ${theme.accent}60`
             }}
           >
@@ -366,7 +366,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             onClick={nextQuestion}
             fullWidth
             className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-base font-bold"
-            style={{ background: `linear-gradient(to left, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' }}
+            style={{ backgroundColor: theme.bgMain, color: '#ffffff' }}
           >
             <span>Selanjutnya</span>
             <ChevronRight size={20} />
@@ -377,7 +377,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
       {/* Navigation Grid */}
       <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-[2rem] border-4 shadow-xl mt-4" style={{ borderColor: theme.accent + '20' }}>
         <h4 className="text-center font-black text-slate-400 mb-4 tracking-widest text-sm">PETA KUIS</h4>
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
           {shuffledQuestions.map((q, idx) => {
             const isCurrent = currentIndex === idx;
             const isAnswered = !!answers[q.id];
@@ -385,17 +385,18 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
               <button
                 key={q.id}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-12 rounded-xl font-black text-sm transition-all duration-300 relative overflow-hidden ${
+                className={`h-14 sm:h-16 rounded-xl font-black text-base sm:text-lg transition-all duration-300 relative overflow-hidden flex items-center justify-center ${
                   isCurrent 
-                    ? 'text-white scale-110 shadow-lg z-10' 
+                    ? 'text-white scale-[1.05] shadow-lg z-10 ring-4' 
                     : isAnswered 
                       ? 'text-white shadow-md hover:scale-105' 
                       : 'bg-white text-slate-400 hover:bg-slate-100 border-2 border-slate-100 hover:border-slate-300'
                 }`}
                 style={isCurrent ? { 
-                  background: `linear-gradient(135deg, ${theme.accent}, ${theme.bgSidebar})`
+                  backgroundColor: theme.accent,
+                  ringColor: theme.accent + '50'
                 } : isAnswered ? {
-                  background: theme.bgMain, opacity: 0.85
+                  backgroundColor: theme.bgMain, opacity: 0.9
                 } : {}}
               >
                 {isCurrent && <div className="absolute inset-0 bg-white/20 animate-pulse" />}

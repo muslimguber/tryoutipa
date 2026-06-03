@@ -708,13 +708,13 @@ const App = () => {
                 exit={{ opacity: 0, x: -20 }}
               >
                 {activeModule === 1 && (
-                  <Bab4Renderer theme={theme} username={username} userClass={userClass} title="GETARAN, GELOMBANG DAN CAHAYA" onComplete={() => setCurrentView('home')} />
+                  <Bab4Renderer theme={theme} username={username} userClass={userClass} title="GETARAN, GELOMBANG DAN CAHAYA" onComplete={() => setCurrentView('home')} searchQuery={searchQuery} />
                 )}
                 {activeModule === 2 && (
-                  <Bab5Renderer theme={theme} username={username} userClass={userClass} title="UNSUR, SENYAWA, CAMPURAN" onComplete={() => setCurrentView('home')} />
+                  <Bab5Renderer theme={theme} username={username} userClass={userClass} title="UNSUR, SENYAWA, CAMPURAN" onComplete={() => setCurrentView('home')} searchQuery={searchQuery} />
                 )}
                 {activeModule === 3 && (
-                  <Bab6Renderer theme={theme} username={username} userClass={userClass} title="STRUKTUR BUMI" onComplete={() => setCurrentView('home')} />
+                  <Bab6Renderer theme={theme} username={username} userClass={userClass} title="STRUKTUR BUMI" onComplete={() => setCurrentView('home')} searchQuery={searchQuery} />
                 )}
               </motion.div>
             )}

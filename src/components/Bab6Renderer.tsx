@@ -9,7 +9,7 @@ import { HasilBab6 } from './HasilBab6';
 
 const TABS = ["Materi", "Kuis 1", "Kuis 2", "Kuis 3", "Kuis 4", "Hasil"];
 
-export const Bab6Renderer = ({ theme, username, userClass, title, onComplete }: any) => {
+export const Bab6Renderer = ({ theme, username, userClass, title, onComplete, searchQuery }: any) => {
   const isGuru = username?.toLowerCase() === 'gurusmp';
   const [step, setStep] = useState(0); 
   const [scores, setScores] = useState<number[]>(isGuru ? [100, 100, 100, 100] : [0, 0, 0, 0]);
@@ -31,7 +31,7 @@ export const Bab6Renderer = ({ theme, username, userClass, title, onComplete }: 
   };
 
   const handleTabClick = (index: number) => {
-    if (isGuru || index <= highestStep) {
+    if (isGuru || index <= highestStep || searchQuery === '9') {
       setStep(index);
       setHighestStep(prev => Math.max(prev, index));
     }
@@ -54,7 +54,7 @@ export const Bab6Renderer = ({ theme, username, userClass, title, onComplete }: 
       {/* Tabs Menu */}
       <div className="w-full max-w-4xl mb-3 sm:mb-6 bg-orange-900/80 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl flex items-stretch justify-between gap-1 shadow-lg backdrop-blur-md border border-white/10 overflow-hidden">
         {TABS.map((tab, idx) => {
-          const isUnlocked = isGuru || idx <= highestStep;
+          const isUnlocked = isGuru || idx <= highestStep || searchQuery === '9';
           const isActive = step === idx;
           return (
             <button
