@@ -256,53 +256,78 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
-      <div className="bg-white/80 backdrop-blur-md p-4 rounded-2xl shadow-lg border-2 border-white/60 flex justify-between items-center px-6">
-        <div className="flex items-center gap-3 min-w-0">
-          <Zap className="text-yellow-500 fill-yellow-500 flex-shrink-0" size={24} />
-          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-sm md:text-base">Kuis {quizNumber}: {title}</h2>
+    <div className="w-full max-w-3xl mx-auto space-y-6">
+      <motion.div 
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-white/60 flex justify-between items-center px-6 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-transparent via-current to-transparent" style={{ color: theme.accent }} />
+        <div className="flex items-center gap-3 min-w-0 relative z-10">
+          <div className="p-2 rounded-2xl bg-gradient-to-br" style={{ backgroundImage: `linear-gradient(to bottom right, ${theme.accent}, ${theme.bgMain})` }}>
+            <Zap className="text-white fill-white flex-shrink-0" size={24} />
+          </div>
+          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-lg md:text-xl">Kuis {quizNumber}: <span style={{ color: theme.accent }}>{title}</span></h2>
         </div>
-        <div className="text-xl font-black text-emerald-600">
+        <div className="text-2xl font-black relative z-10" style={{ color: theme.bgMain }}>
           {currentIndex + 1}<span className="text-slate-300 text-sm">/{totalQuestions}</span>
         </div>
-      </div>
+      </motion.div>
 
-      <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-1 shadow-inner">
+      <div className="h-4 bg-white/50 rounded-full overflow-hidden p-1 shadow-inner border border-white/40">
         <motion.div 
           animate={{ width: `${progressPercent}%` }}
-          className="h-full bg-emerald-500 rounded-full transition-all"
+          className="h-full rounded-full transition-all duration-500 bg-gradient-to-r"
+          style={{ backgroundImage: `linear-gradient(to right, ${theme.bgSidebar}, ${theme.accent})` }}
         />
       </div>
 
-      <div className="relative min-h-[300px]">
+      <div className="relative min-h-[350px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
             custom={direction}
-            initial={{ x: direction * 50, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -direction * 50, opacity: 0 }}
-            className="bg-white rounded-3xl shadow-xl p-6 md:p-8 border-2 border-slate-50 space-y-6"
+            initial={{ x: direction * 50, opacity: 0, scale: 0.95 }}
+            animate={{ x: 0, opacity: 1, scale: 1 }}
+            exit={{ x: -direction * 50, opacity: 0, scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="bg-white rounded-[2rem] shadow-xl p-6 md:p-10 border-4 space-y-8 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-300"
+            style={{ borderColor: theme.accent + '30' }}
           >
-            <h3 className="text-lg md:text-xl font-black text-slate-800 leading-snug text-justify whitespace-pre-line">
+            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-5" style={{ backgroundColor: theme.accent }} />
+            <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full opacity-5" style={{ backgroundColor: theme.bgMain }} />
+            
+            <h3 className="text-xl md:text-2xl font-black text-slate-800 leading-snug text-justify whitespace-pre-line relative z-10">
               {currentQuestion?.question}
             </h3>
 
-            <div className="grid grid-cols-1 gap-3">
-              {currentQuestion?.options.map((option: any) => {
+            <div className="grid grid-cols-1 gap-4 relative z-10">
+              {currentQuestion?.options.map((option: any, index: number) => {
                 const isSelected = answers[currentQuestion?.id] === option.id;
+                const labels = ['A', 'B', 'C', 'D'];
                 return (
-                    <ThemeButton
+                    <motion.button
                       key={option.id}
-                      theme={theme}
-                      variant={isSelected ? 'primary' : 'secondary'}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleAnswer(option.id)}
-                      fullWidth
-                      className="text-left justify-start px-6"
-                      style={isSelected ? { backgroundColor: theme.accent } : { color: '#1e293b', border: '2px solid #f1f5f9' }}
+                      className={`w-full text-left flex items-start sm:items-center p-4 sm:p-5 rounded-2xl font-bold transition-all duration-300 border-2 ${
+                        isSelected 
+                          ? 'shadow-lg text-white scale-[1.02]' 
+                          : 'bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 border-slate-100 hover:shadow-md'
+                      }`}
+                      style={isSelected ? { 
+                        background: `linear-gradient(135deg, ${theme.accent}, ${theme.bgSidebar})`,
+                        borderColor: theme.bgMain
+                      } : {}}
                     >
-                      <span className="leading-tight">{option.text}</span>
-                    </ThemeButton>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center font-black mr-4 shrink-0 shadow-sm ${
+                        isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
+                      }`}>
+                        {labels[index]}
+                      </div>
+                      <span className="leading-snug text-base sm:text-lg">{option.text}</span>
+                    </motion.button>
                 );
               })}
             </div>
@@ -310,19 +335,19 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
         </AnimatePresence>
       </div>
 
-      <div className="flex justify-between items-center gap-4">
+      <div className="flex justify-between items-center gap-4 pt-2">
         <ThemeButton
           theme={theme}
           onClick={prevQuestion}
           disabled={currentIndex === 0}
-          className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2`}
+          className={`${currentIndex === 0 ? 'opacity-50 grayscale cursor-not-allowed' : ''} flex items-center gap-2 px-6 py-4 rounded-2xl`}
           style={currentIndex > 0 
-            ? { backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' } 
+            ? { background: `linear-gradient(to right, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' } 
             : { color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' }
           }
         >
-          <ChevronLeft size={16} />
-          <span>Sebelumnya</span>
+          <ChevronLeft size={20} />
+          <span className="font-bold text-lg hidden sm:inline">Sebelumnya</span>
         </ThemeButton>
 
         {currentIndex === totalQuestions - 1 ? (
@@ -331,45 +356,60 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             onClick={handleFinish}
             disabled={answeredCount < totalQuestions}
             fullWidth
-            className="flex-1 flex items-center justify-center gap-2"
-            style={{ backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' }}
+            className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-lg font-black"
+            style={answeredCount < totalQuestions ? {
+               color: '#94a3b8', border: '2px solid #e2e8f0', backgroundColor: '#f1f5f9' 
+            } : { 
+               background: `linear-gradient(45deg, ${theme.accent}, ${theme.bgMain})`, color: '#ffffff',
+               boxShadow: `0 10px 25px -5px ${theme.accent}60`
+            }}
           >
             <span>Selesaikan Kuis</span>
-            <CheckCircle2 size={16} />
+            <CheckCircle2 size={24} />
           </ThemeButton>
         ) : (
           <ThemeButton
             theme={theme}
             onClick={nextQuestion}
             fullWidth
-            className="flex-1 flex items-center justify-center gap-2"
-            style={{ backgroundColor: theme.bgMain, background: theme.bgMain, color: '#ffffff' }}
+            className="flex-1 flex items-center justify-center gap-2 py-4 rounded-2xl text-lg font-black"
+            style={{ background: `linear-gradient(to left, ${theme.bgMain}, ${theme.bgSidebar})`, color: '#ffffff' }}
           >
             <span>Selanjutnya</span>
-            <ChevronRight size={16} />
+            <ChevronRight size={24} />
           </ThemeButton>
         )}
       </div>
 
       {/* Navigation Grid */}
-      <div className="bg-white/50 p-6 rounded-3xl border-2 border-white/60">
-        <div className="grid grid-cols-5 sm:grid-cols-10 gap-2">
-          {shuffledQuestions.map((q, idx) => (
-            <button
-              key={q.id}
-              onClick={() => setCurrentIndex(idx)}
-              className={`h-10 rounded-xl font-black text-xs transition-all ${
-                currentIndex === idx 
-                  ? 'text-white scale-110 shadow-lg' 
-                  : answers[q.id] 
-                    ? 'bg-emerald-200 text-emerald-700' 
-                    : 'bg-white text-slate-400'
-              }`}
-              style={currentIndex === idx ? { backgroundColor: theme.accent } : {}}
-            >
-              {idx + 1}
-            </button>
-          ))}
+      <div className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-[2rem] border-4 shadow-xl mt-8" style={{ borderColor: theme.accent + '20' }}>
+        <h4 className="text-center font-black text-slate-400 mb-4 tracking-widest text-sm">PETA KUIS</h4>
+        <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
+          {shuffledQuestions.map((q, idx) => {
+            const isCurrent = currentIndex === idx;
+            const isAnswered = !!answers[q.id];
+            return (
+              <button
+                key={q.id}
+                onClick={() => setCurrentIndex(idx)}
+                className={`h-12 rounded-xl font-black text-sm transition-all duration-300 relative overflow-hidden ${
+                  isCurrent 
+                    ? 'text-white scale-110 shadow-lg z-10' 
+                    : isAnswered 
+                      ? 'text-white shadow-md hover:scale-105' 
+                      : 'bg-white text-slate-400 hover:bg-slate-100 border-2 border-slate-100 hover:border-slate-300'
+                }`}
+                style={isCurrent ? { 
+                  background: `linear-gradient(135deg, ${theme.accent}, ${theme.bgSidebar})`
+                } : isAnswered ? {
+                  background: theme.bgMain, opacity: 0.85
+                } : {}}
+              >
+                {isCurrent && <div className="absolute inset-0 bg-white/20 animate-pulse" />}
+                <span className="relative z-10">{idx + 1}</span>
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>
