@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { MateriBab5 } from './MateriBab5';
 import { Kuis1Bab5 } from './Kuis1Bab5';
@@ -11,9 +11,65 @@ const TABS = ["BAB 5", "Kuis 1", "Kuis 2", "Kuis 3", "Kuis 4", "Hasil"];
 
 export const Bab5Renderer = ({ theme, username, userClass, title, onComplete, searchQuery }: any) => {
   const isGuru = username?.toLowerCase() === 'gurusmp';
-  const [step, setStep] = useState(0); 
-  const [scores, setScores] = useState<number[]>(isGuru ? [100, 100, 100, 100] : [0, 0, 0, 0]);
-  const [highestStep, setHighestStep] = useState(0);
+  const userKey = username && userClass ? `${username.trim()}_${userClass.trim()}` : '';
+
+  const [step, setStep] = useState(() => {
+    if (isGuru) return 0;
+    if (userKey) {
+      const saved = localStorage.getItem(`ipa_bab5_step_${userKey}`);
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  }); 
+
+  const [scores, setScores] = useState<number[]>(() => {
+    if (isGuru) return [100, 100, 100, 100];
+    if (userKey) {
+      const saved = localStorage.getItem(`ipa_bab5_scores_${userKey}`);
+      return saved ? JSON.parse(saved) : [0, 0, 0, 0];
+    }
+    return [0, 0, 0, 0];
+  });
+
+  const [highestStep, setHighestStep] = useState(() => {
+    if (isGuru) return 0;
+    if (userKey) {
+      const saved = localStorage.getItem(`ipa_bab5_highestStep_${userKey}`);
+      return saved ? parseInt(saved, 10) : 0;
+    }
+    return 0;
+  });
+
+  useEffect(() => {
+    if (!isGuru && userKey) {
+      const savedStep = localStorage.getItem(`ipa_bab5_step_${userKey}`);
+      setStep(savedStep ? parseInt(savedStep, 10) : 0);
+
+      const savedScores = localStorage.getItem(`ipa_bab5_scores_${userKey}`);
+      setScores(savedScores ? JSON.parse(savedScores) : [0, 0, 0, 0]);
+
+      const savedHighest = localStorage.getItem(`ipa_bab5_highestStep_${userKey}`);
+      setHighestStep(savedHighest ? parseInt(savedHighest, 10) : 0);
+    }
+  }, [userKey, isGuru]);
+
+  useEffect(() => {
+    if (!isGuru && userKey) {
+      localStorage.setItem(`ipa_bab5_step_${userKey}`, step.toString());
+    }
+  }, [step, userKey, isGuru]);
+
+  useEffect(() => {
+    if (!isGuru && userKey) {
+      localStorage.setItem(`ipa_bab5_scores_${userKey}`, JSON.stringify(scores));
+    }
+  }, [scores, userKey, isGuru]);
+
+  useEffect(() => {
+    if (!isGuru && userKey) {
+      localStorage.setItem(`ipa_bab5_highestStep_${userKey}`, highestStep.toString());
+    }
+  }, [highestStep, userKey, isGuru]);
 
   const handleNextMateri = () => {
     setStep(1);

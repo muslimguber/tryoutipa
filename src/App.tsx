@@ -94,7 +94,6 @@ const App = () => {
     const savedUser = homeService.getUser();
     const savedClass = localStorage.getItem('ipa_user_class');
     const savedIsLoggedIn = localStorage.getItem('ipa_is_logged_in') === 'true';
-    const savedProgress = homeService.getProgress();
     const savedTheme = localStorage.getItem('ipa_theme');
     const savedView = localStorage.getItem('ipa_current_view');
     const savedActiveModule = localStorage.getItem('ipa_active_module');
@@ -107,9 +106,7 @@ const App = () => {
         setIsLoggedIn(true);
       }
     }
-    if (savedProgress) {
-      setProgress(savedProgress);
-    }
+    
     if (savedTheme) {
       try {
         const parsed = JSON.parse(savedTheme);
@@ -133,6 +130,41 @@ const App = () => {
     }
   }, []);
 
+  // Sync user-specific progress and unlocked modules
+  useEffect(() => {
+    if (isLoggedIn && username && userClass) {
+      const userKey = `${username.trim()}_${userClass.trim()}`;
+      
+      const savedProgress = localStorage.getItem(`ipa_progress_${userKey}`);
+      if (savedProgress) {
+        try {
+          setProgress(JSON.parse(savedProgress));
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        setProgress({
+          completedMaterials: [],
+          isIntroductionCompleted: false,
+          highScores: {},
+          quizHistory: [],
+          username: username.trim()
+        });
+      }
+
+      const savedUnlocked = localStorage.getItem(`ipa_unlocked_modules_${userKey}`);
+      if (savedUnlocked) {
+        try {
+          setUnlockedModules(new Set(JSON.parse(savedUnlocked)));
+        } catch (e) {
+          console.error(e);
+        }
+      } else {
+        setUnlockedModules(new Set());
+      }
+    }
+  }, [isLoggedIn, username, userClass]);
+
   useEffect(() => {
     localStorage.setItem('ipa_active_module', activeModule.toString());
   }, [activeModule]);
@@ -145,8 +177,11 @@ const App = () => {
   }, [isLoggedIn, username, userClass]);
 
   useEffect(() => {
-    homeService.saveProgress(progress);
-  }, [progress]);
+    if (isLoggedIn && username && userClass) {
+      const userKey = `${username.trim()}_${userClass.trim()}`;
+      localStorage.setItem(`ipa_progress_${userKey}`, JSON.stringify(progress));
+    }
+  }, [progress, isLoggedIn, username, userClass]);
 
   useEffect(() => {
     localStorage.setItem('ipa_theme', JSON.stringify(theme));
@@ -165,15 +200,11 @@ const App = () => {
   }, [selectedMaterialId]);
 
   useEffect(() => {
-    const savedUnlocked = localStorage.getItem('ipa_unlocked_modules');
-    if (savedUnlocked) {
-      setUnlockedModules(new Set(JSON.parse(savedUnlocked)));
+    if (isLoggedIn && username && userClass) {
+      const userKey = `${username.trim()}_${userClass.trim()}`;
+      localStorage.setItem(`ipa_unlocked_modules_${userKey}`, JSON.stringify(Array.from(unlockedModules)));
     }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('ipa_unlocked_modules', JSON.stringify(Array.from(unlockedModules)));
-  }, [unlockedModules]);
+  }, [unlockedModules, isLoggedIn, username, userClass]);
 
   useEffect(() => {
     // Check if app is already running in standalone/installed mode
@@ -238,25 +269,7 @@ const App = () => {
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim() && userClass.trim()) {
-      const lastUser = localStorage.getItem('ipa_user');
-      const lastClass = localStorage.getItem('ipa_user_class');
       const currentUsername = username.trim();
-      const currentClass = userClass.trim();
-
-      // If user or class changed, reset progress
-      if ((lastUser && lastUser !== currentUsername) || (lastClass && lastClass !== currentClass)) {
-        setUnlockedModules(new Set());
-        setProgress({
-          completedMaterials: [],
-          isIntroductionCompleted: false,
-          highScores: {},
-          quizHistory: [],
-          username: currentUsername
-        });
-        localStorage.removeItem('ipa_unlocked_modules');
-        localStorage.removeItem('ipa_progress');
-        localStorage.removeItem('ipa_perkenalan_completed_pages');
-      }
 
       setIsLoggedIn(true);
       setProgress(prev => ({ ...prev, username: currentUsername }));

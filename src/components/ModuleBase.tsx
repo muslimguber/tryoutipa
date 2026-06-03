@@ -191,9 +191,10 @@ export const ModuleBase: React.FC<ModuleBaseProps> = ({
 
   // Load persistence
   useEffect(() => {
-    const savedActivePage = localStorage.getItem(`ipa_modul_${moduleNumber}_active_page`);
-    const savedCompletedPages = localStorage.getItem(`ipa_modul_${moduleNumber}_completed_pages`);
-    const savedOpenedPages = localStorage.getItem(`ipa_modul_${moduleNumber}_opened_pages`);
+    const userSuffix = username && userClass ? `_${username.trim()}_${userClass.trim()}` : '';
+    const savedActivePage = localStorage.getItem(`ipa_modul_${moduleNumber}_active_page${userSuffix}`);
+    const savedCompletedPages = localStorage.getItem(`ipa_modul_${moduleNumber}_completed_pages${userSuffix}`);
+    const savedOpenedPages = localStorage.getItem(`ipa_modul_${moduleNumber}_opened_pages${userSuffix}`);
 
     if (savedActivePage) setActivePage(parseInt(savedActivePage, 10));
     else setActivePage(0);
@@ -220,20 +221,23 @@ export const ModuleBase: React.FC<ModuleBaseProps> = ({
     
     setQuizActive(false);
     setQuizSelected(null);
-  }, [moduleNumber]);
+  }, [moduleNumber, username, userClass]);
 
   // Save persistence
   useEffect(() => {
-    localStorage.setItem(`ipa_modul_${moduleNumber}_active_page`, activePage.toString());
-  }, [activePage, moduleNumber]);
+    const userSuffix = username && userClass ? `_${username.trim()}_${userClass.trim()}` : '';
+    localStorage.setItem(`ipa_modul_${moduleNumber}_active_page${userSuffix}`, activePage.toString());
+  }, [activePage, moduleNumber, username, userClass]);
 
   useEffect(() => {
-    localStorage.setItem(`ipa_modul_${moduleNumber}_completed_pages`, JSON.stringify(completedPages));
-  }, [completedPages, moduleNumber]);
+    const userSuffix = username && userClass ? `_${username.trim()}_${userClass.trim()}` : '';
+    localStorage.setItem(`ipa_modul_${moduleNumber}_completed_pages${userSuffix}`, JSON.stringify(completedPages));
+  }, [completedPages, moduleNumber, username, userClass]);
 
   useEffect(() => {
-    localStorage.setItem(`ipa_modul_${moduleNumber}_opened_pages`, JSON.stringify(openedPages));
-  }, [openedPages, moduleNumber]);
+    const userSuffix = username && userClass ? `_${username.trim()}_${userClass.trim()}` : '';
+    localStorage.setItem(`ipa_modul_${moduleNumber}_opened_pages${userSuffix}`, JSON.stringify(openedPages));
+  }, [openedPages, moduleNumber, username, userClass]);
 
   const handleQuiz = (optionId: string) => {
     setQuizSelected(optionId);
