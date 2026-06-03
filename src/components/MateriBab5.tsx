@@ -6,7 +6,7 @@ export const MateriBab5 = ({ onNext }: any) => (
   <div className="w-full max-w-4xl mx-auto flex flex-col items-center justify-center space-y-8">
     <div className="w-full relative rounded-[2rem] overflow-hidden shadow-xl border-4 border-white/40">
       <img 
-        src="https://i.ibb.co.com/GfppkCn4/Gemini-Generated-Image-vjmx9vjmx9vjmx9v-1.png" 
+        src="https://i.ibb.co.com/GfqV7xSg/1000286496.jpg" 
         alt="Cover Bab 5" 
         className="w-full h-auto object-cover"
         referrerPolicy="no-referrer"
