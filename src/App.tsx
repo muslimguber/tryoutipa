@@ -61,6 +61,9 @@ const App = () => {
   const [logoError, setLogoError] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [showSearch, setShowSearch] = useState<boolean>(false);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [isInstallable, setIsInstallable] = useState<boolean>(false);
+  const [showIOSInstallGuide, setShowIOSInstallGuide] = useState<boolean>(false);
   
   // Progress State
   const [progress, setProgress] = useState<UserProgress>({
@@ -172,6 +175,33 @@ const App = () => {
     localStorage.setItem('ipa_unlocked_modules', JSON.stringify(Array.from(unlockedModules)));
   }, [unlockedModules]);
 
+  useEffect(() => {
+    // Check if app is already running in standalone/installed mode
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (navigator as any).standalone === true;
+    if (isStandalone) {
+      setIsInstallable(false);
+      return;
+    }
+
+    // iOS devices support PWA but do not dispatch 'beforeinstallprompt', so we can always offer instruction on iOS
+    const isIOSDevice = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    if (isIOSDevice) {
+      setIsInstallable(true);
+    }
+
+    const handleBeforeInstallPrompt = (e: Event) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+      setIsInstallable(true);
+    };
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+
+    return () => {
+      window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    };
+  }, []);
+
   // --- Derived Data ---
   const isTeacher = username.toLowerCase() === 'gurusmp';
   const modulePasswords: Record<number, string> = {
@@ -194,6 +224,17 @@ const App = () => {
   }, [progress.completedMaterials]);
 
   // --- Handlers ---
+  const handleInstallClick = async () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      console.log(`User response to install: ${outcome}`);
+      setDeferredPrompt(null);
+      setIsInstallable(false);
+    } else {
+      setShowIOSInstallGuide(true);
+    }
+  };
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username.trim() && userClass.trim()) {
@@ -660,7 +701,7 @@ const App = () => {
               className="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all opacity-60 hover:opacity-100"
               title="Tentang Aplikasi"
             >
-              <Info size={16} />
+              <Icons.Info size={16} />
             </button>
           </div>
           <a 
@@ -673,6 +714,16 @@ const App = () => {
             <Icons.Share2 size={14} />
             <span>Bagikan Tryout</span>
           </a>
+          {isInstallable && (
+            <button 
+              onClick={handleInstallClick}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 hover:shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all text-xs font-black uppercase tracking-wider text-white border border-blue-500/10"
+              title="Pasang Aplikasi (PWA)"
+            >
+              <Icons.Download size={14} />
+              <span>Pasang Aplikasi</span>
+            </button>
+          )}
         </div>
       </motion.aside>
 
@@ -1169,6 +1220,48 @@ const App = () => {
               Kembali Belajar
             </button>
           </div>
+        </div>
+      </Dialog>
+
+      {/* iOS PWA Installation Guide */}
+      <Dialog 
+        show={showIOSInstallGuide} 
+        onClose={() => setShowIOSInstallGuide(false)} 
+        maxWidth="max-w-[340px]"
+        hideHeader={true}
+      >
+        <div className="p-6 text-center">
+          <div className="relative mx-auto w-16 h-16 mb-4">
+            <div className="absolute inset-0 bg-blue-500/30 blur-xl rounded-full" />
+            <div className="relative w-16 h-16 bg-gradient-to-br from-blue-400 to-blue-600 rounded-2xl flex items-center justify-center shadow-lg">
+              <Icons.Smartphone size={32} className="text-white" />
+            </div>
+          </div>
+          
+          <div className="space-y-4 mb-6 text-left">
+            <h3 className="text-lg font-black text-white text-center tracking-tight">Pasang di iPhone / iPad</h3>
+            <p className="text-xs text-slate-300 font-medium leading-relaxed">
+              Mainkan luring &amp; layar penuh tanpa batas browser dengan menambahkan aplikasi ini ke Layar Utama Anda:
+            </p>
+            <ol className="list-decimal list-inside text-xs text-slate-300 space-y-2 font-medium bg-white/5 p-3 rounded-xl border border-white/5">
+              <li className="pl-1">
+                Ketuk tombol <strong className="text-blue-400">Bagikan (Share)</strong> di bagian bawah layar Safari <Icons.Share size={14} className="inline ml-1 align-text-bottom" />.
+              </li>
+              <li className="pl-1">
+                Gulir ke bawah dan ketuk <strong className="text-blue-400">Tambahkan ke Layar Utama</strong> <Icons.PlusSquare size={14} className="inline ml-1 align-text-bottom" />.
+              </li>
+              <li className="pl-1">
+                Tekan tombol <strong className="text-blue-400">Tambah (Add)</strong> di sudut kanan atas untuk menyelesaikan instalasi.
+              </li>
+            </ol>
+          </div>
+
+          <button 
+            onClick={() => setShowIOSInstallGuide(false)}
+            className="w-full py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-bold transition-colors uppercase tracking-wider text-xs"
+          >
+            Mengerti
+          </button>
         </div>
       </Dialog>
     </div>
