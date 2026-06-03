@@ -172,7 +172,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
     const percentage = Math.round((score / totalQuestions) * 100);
     setShowResult(true);
     
-    if (percentage >= 90) {
+    if (percentage >= 80) {
       confetti({
         particleCount: 150,
         spread: 70,
@@ -208,7 +208,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
   const percentage = Math.round((score / totalQuestions) * 100);
 
   if (showResult) {
-    const passed = percentage >= 90;
+    const passed = percentage >= 80;
     return (
       <div className="w-full max-w-2xl mx-auto py-6">
         <motion.div 
@@ -239,7 +239,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
                 <>
                   <div className="flex justify-center text-rose-500 mb-4"><XCircle size={48} /></div>
                   <h3 className="text-2xl font-black mb-2 text-rose-600">Belum Lulus</h3>
-                  <p className="text-slate-600 font-bold">Syarat minimal nilai adalah 90. Jangan menyerah, ulangi lagi dan pastikan kamu bisa menjawab dengan benar.</p>
+                  <p className="text-slate-600 font-bold">Syarat minimal nilai adalah 80. Jangan menyerah, ulangi lagi dan pastikan kamu bisa menjawab dengan benar.</p>
                 </>
               )}
             </div>
