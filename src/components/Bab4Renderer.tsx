@@ -7,7 +7,7 @@ import { Kuis3Bab4 } from './Kuis3Bab4';
 import { Kuis4Bab4 } from './Kuis4Bab4';
 import { HasilBab4 } from './HasilBab4';
 
-const TABS = ["Materi", "Kuis 1", "Kuis 2", "Kuis 3", "Kuis 4", "Hasil"];
+const TABS = ["BAB 4", "Kuis 1", "Kuis 2", "Kuis 3", "Kuis 4", "Hasil"];
 
 export const Bab4Renderer = ({ theme, username, userClass, title, onComplete, searchQuery }: any) => {
   const isGuru = username?.toLowerCase() === 'gurusmp';

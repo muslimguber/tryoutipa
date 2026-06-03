@@ -375,8 +375,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
       </div>
 
       {/* Navigation Grid */}
-      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-[2rem] border-4 shadow-xl mt-4" style={{ borderColor: theme.accent + '20' }}>
-        <h4 className="text-center font-black text-slate-400 mb-4 tracking-widest text-sm">PETA KUIS</h4>
+      <div className="bg-white/80 backdrop-blur-sm p-3 sm:p-4 rounded-[1.5rem] border-4 shadow-xl mt-4" style={{ borderColor: theme.accent + '20' }}>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
           {shuffledQuestions.map((q, idx) => {
             const isCurrent = currentIndex === idx;
@@ -385,7 +384,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
               <button
                 key={q.id}
                 onClick={() => setCurrentIndex(idx)}
-                className={`h-14 sm:h-16 rounded-xl font-black text-base sm:text-lg transition-all duration-300 relative overflow-hidden flex items-center justify-center ${
+                className={`h-10 sm:h-12 rounded-lg font-black text-sm sm:text-base transition-all duration-300 relative overflow-hidden flex items-center justify-center ${
                   isCurrent 
                     ? 'text-white scale-[1.05] shadow-lg z-10 ring-4' 
                     : isAnswered 
