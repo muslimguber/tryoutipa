@@ -50,9 +50,9 @@ export const Bab6Renderer = ({ theme, username, userClass, title, onComplete }: 
   };
 
   return (
-    <div className="w-full flex flex-col items-center justify-start py-8 px-4">
+    <div className="w-full flex flex-col items-center justify-start pt-2 pb-6 px-2 sm:px-4">
       {/* Tabs Menu */}
-      <div className="w-full max-w-4xl mb-6 bg-orange-900/80 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl flex items-stretch justify-between gap-1 shadow-lg backdrop-blur-md border border-white/10 overflow-hidden">
+      <div className="w-full max-w-4xl mb-3 sm:mb-6 bg-orange-900/80 p-1 sm:p-1.5 rounded-xl sm:rounded-2xl flex items-stretch justify-between gap-1 shadow-lg backdrop-blur-md border border-white/10 overflow-hidden">
         {TABS.map((tab, idx) => {
           const isUnlocked = isGuru || idx <= highestStep;
           const isActive = step === idx;

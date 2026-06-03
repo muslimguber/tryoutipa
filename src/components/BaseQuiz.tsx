@@ -274,33 +274,8 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
-      <motion.div 
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="bg-white/90 backdrop-blur-md p-5 rounded-3xl shadow-[0_8px_30px_rgb(0,0,0,0.08)] border-2 border-white/60 flex justify-between items-center px-6 relative overflow-hidden"
-      >
-        <div className="absolute inset-0 opacity-10 bg-gradient-to-r from-transparent via-current to-transparent" style={{ color: theme.accent }} />
-        <div className="flex items-center gap-3 min-w-0 relative z-10">
-          <div className="p-2 rounded-2xl bg-gradient-to-br" style={{ backgroundImage: `linear-gradient(to bottom right, ${theme.accent}, ${theme.bgMain})` }}>
-            <Zap className="text-white fill-white flex-shrink-0" size={24} />
-          </div>
-          <h2 className="font-black text-slate-800 truncate whitespace-nowrap text-base md:text-lg">Kuis {quizNumber}: <span style={{ color: theme.accent }}>{title}</span></h2>
-        </div>
-        <div className="text-2xl font-black relative z-10" style={{ color: theme.bgMain }}>
-          {currentIndex + 1}<span className="text-slate-300 text-sm">/{totalQuestions}</span>
-        </div>
-      </motion.div>
-
-      <div className="h-4 bg-white/50 rounded-full overflow-hidden p-1 shadow-inner border border-white/40">
-        <motion.div 
-          animate={{ width: `${progressPercent}%` }}
-          className="h-full rounded-full transition-all duration-500 bg-gradient-to-r"
-          style={{ backgroundImage: `linear-gradient(to right, ${theme.bgSidebar}, ${theme.accent})` }}
-        />
-      </div>
-
-      <div className="relative min-h-[350px]">
+    <div className="w-full max-w-3xl mx-auto space-y-3">
+      <div className="relative min-h-[200px]">
         <AnimatePresence mode="wait" custom={direction}>
           <motion.div
             key={currentIndex}
@@ -309,17 +284,17 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
             animate={{ x: 0, opacity: 1, scale: 1 }}
             exit={{ x: -direction * 50, opacity: 0, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className="bg-white rounded-[2rem] shadow-xl p-6 md:p-10 border-4 space-y-8 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-300"
+            className="bg-white rounded-[2rem] shadow-xl p-4 md:p-8 border-4 space-y-4 relative overflow-hidden group hover:shadow-2xl transition-shadow duration-300"
             style={{ borderColor: theme.accent + '30' }}
           >
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full opacity-5" style={{ backgroundColor: theme.accent }} />
             <div className="absolute -bottom-10 -left-10 w-40 h-40 rounded-full opacity-5" style={{ backgroundColor: theme.bgMain }} />
             
-            <h3 className="text-lg md:text-xl font-bold text-slate-800 leading-relaxed text-justify whitespace-pre-line relative z-10">
+            <h3 className="text-base md:text-lg font-bold text-slate-800 leading-snug text-justify whitespace-pre-line relative z-10">
               {currentQuestion?.question}
             </h3>
 
-            <div className="grid grid-cols-1 gap-4 relative z-10">
+            <div className="grid grid-cols-1 gap-2 sm:gap-3 relative z-10">
               {currentQuestion?.options.map((option: any, index: number) => {
                 const isSelected = answers[currentQuestion?.id] === option.id;
                 const labels = ['A', 'B', 'C', 'D'];
@@ -329,7 +304,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => handleAnswer(option.id)}
-                      className={`w-full text-left flex items-start sm:items-center p-3 sm:p-4 rounded-xl font-semibold transition-all duration-300 border-2 ${
+                      className={`w-full text-left flex items-start sm:items-center p-2 sm:p-3 rounded-lg font-semibold transition-all duration-300 border-2 ${
                         isSelected 
                           ? 'shadow-md text-white scale-[1.01]' 
                           : 'bg-white hover:bg-slate-50 text-slate-700 hover:border-slate-300 border-slate-100 hover:shadow-sm'
@@ -339,7 +314,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
                         borderColor: theme.bgMain
                       } : {}}
                     >
-                      <div className={`w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold mr-3 shrink-0 shadow-sm transition-colors ${
+                      <div className={`w-6 h-6 text-sm rounded-full flex items-center justify-center font-bold mr-2 shrink-0 shadow-sm transition-colors ${
                         isSelected ? 'bg-white/20 text-white' : 'bg-slate-100 text-slate-500'
                       }`}>
                         {labels[index]}
@@ -400,7 +375,7 @@ export const BaseQuiz: React.FC<BaseQuizProps> = ({
       </div>
 
       {/* Navigation Grid */}
-      <div className="bg-white/80 backdrop-blur-sm p-6 sm:p-8 rounded-[2rem] border-4 shadow-xl mt-8" style={{ borderColor: theme.accent + '20' }}>
+      <div className="bg-white/80 backdrop-blur-sm p-4 sm:p-6 rounded-[2rem] border-4 shadow-xl mt-4" style={{ borderColor: theme.accent + '20' }}>
         <h4 className="text-center font-black text-slate-400 mb-4 tracking-widest text-sm">PETA KUIS</h4>
         <div className="grid grid-cols-5 sm:grid-cols-10 gap-3">
           {shuffledQuestions.map((q, idx) => {
