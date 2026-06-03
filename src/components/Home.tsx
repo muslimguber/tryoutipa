@@ -77,7 +77,7 @@ export const Home: React.FC<HomeProps> = ({ username, userClass, setSidebarOpen,
               className="px-4 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-[10px] md:text-xs font-black uppercase text-white tracking-widest rounded-xl border border-rose-500 shadow-md transition-all flex items-center gap-2 cursor-pointer"
             >
               <Icons.LogOut size={14} />
-              <span>Keluar</span>
+              <span>GANTI AKUN</span>
             </button>
           </div>
         </div>

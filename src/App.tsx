@@ -536,11 +536,14 @@ const App = () => {
                   setShowLogoutConfirm(true);
                   setSidebarOpen(false);
                 }}
-                className="px-2.5 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg transition-all flex-shrink-0 flex items-center justify-center shadow-md shadow-rose-900/40 font-black text-[9px] uppercase tracking-wider gap-1"
-                title="Keluar Sesi"
+                className="px-3 py-2 bg-rose-600 hover:bg-rose-750 text-white rounded-lg transition-all flex-shrink-0 flex items-center justify-center shadow-md shadow-rose-900/40 font-black gap-1.5"
+                title="Ganti Akun"
               >
-                <LogOut size={11} />
-                <span>EXIT</span>
+                <LogOut size={13} className="flex-shrink-0" />
+                <div className="flex flex-col text-left leading-tight text-[7px] tracking-wider uppercase">
+                  <span>Ganti</span>
+                  <span>Akun</span>
+                </div>
               </button>
             </div>
           </div>
@@ -1213,9 +1216,9 @@ const App = () => {
           </div>
           
           <div className="space-y-3 mb-8">
-            <h3 className="text-xl font-black text-white tracking-tight">Yakin ingin keluar?</h3>
+            <h3 className="text-xl font-black text-white tracking-tight">Yakin ingin ganti akun?</h3>
             <p className="text-sm text-slate-300 font-medium leading-relaxed">
-              Sesi belajar Anda akan dihentikan dan nama Anda akan dihapus dari perangkat ini.
+              Sesi belajar saat ini akan dihentikan, namun semua progres belajar Anda pada nama ini tetap tersimpan dengan aman!
             </p>
           </div>
 
@@ -1224,7 +1227,7 @@ const App = () => {
               onClick={handleLogout}
               className="w-full py-4 bg-gradient-to-r from-rose-500 to-rose-600 text-white rounded-2xl font-black shadow-[0_10px_25px_rgba(244,63,94,0.3)] hover:shadow-[0_15px_35px_rgba(244,63,94,0.4)] hover:-translate-y-0.5 active:scale-95 transition-all uppercase tracking-wider text-xs"
             >
-              Ya, Keluar Sekarang
+              Ya, Ganti Akun Sekarang
             </button>
             <button 
               onClick={() => setShowLogoutConfirm(false)}
