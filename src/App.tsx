@@ -639,7 +639,7 @@ const App = () => {
         </div>
 
         {/* Sidebar Footer (Prominent) */}
-        <div className="border-t border-white/10 px-3 py-4 pb-12">
+        <div className="border-t border-white/10 px-3 py-4 pb-12 space-y-2">
           <div className="flex gap-2">
             <button 
               onClick={() => {
@@ -663,6 +663,16 @@ const App = () => {
               <Info size={16} />
             </button>
           </div>
+          <a 
+            href={`https://api.whatsapp.com/send?text=${encodeURIComponent("https://tryoutipa.smpn1bengkalis.sch.id Rajin Belajar, Pandai Menjalani Hidup.")}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 hover:shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all text-xs font-black uppercase tracking-wider text-white border border-emerald-500/10"
+            title="Bagikan ke WhatsApp"
+          >
+            <Icons.Share2 size={14} />
+            <span>Bagikan Tryout</span>
+          </a>
         </div>
       </motion.aside>
 

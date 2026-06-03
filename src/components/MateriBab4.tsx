@@ -17,9 +17,9 @@ export const MateriBab4 = ({ onNext }: any) => (
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={onNext} 
-      className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-black text-xl lg:text-2xl shadow-[0_10px_30px_-10px_rgba(37,99,235,0.5)] transition-colors inline-flex items-center gap-4"
+      className="bg-blue-600 hover:bg-blue-700 text-white px-12 py-5 rounded-2xl font-black text-xl lg:text-2xl shadow-[0_10px_30px_-10px_rgba(37,99,235,0.5)] transition-colors inline-flex items-center"
     >
-      MULAI TRYOUT <ChevronRight size={28} />
+      MULAI TRYOUT
     </motion.button>
   </div>
 );
